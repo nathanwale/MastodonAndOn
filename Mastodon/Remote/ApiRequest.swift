@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// An Access Token granted by OAuth authentication
+typealias AccessToken = String
+
 ///
 /// Protocol for an API Request
 ///  - subPath: path to endpoint, excludes domain, path prefix, and query string
@@ -33,6 +36,9 @@ protocol ApiRequest
     
     /// optional data to post in a POST request
     var postData: Data? { get }
+    
+    /// optional Access Token granted by OAuth authentication
+    var accessToken: AccessToken? { get }
 }
 
 
@@ -88,6 +94,11 @@ extension ApiRequest
             request.httpBody = data
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"
+        }
+        
+        // use access token if available
+        if let accessToken {
+            request.setValue( "Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
         
         return request
