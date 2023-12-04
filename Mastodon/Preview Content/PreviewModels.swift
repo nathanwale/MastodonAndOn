@@ -54,7 +54,7 @@ extension UserTimelineRequest
     /// Sample user statuses request
     static var sample: Self
     {
-        Self(host: sampleHost, userid: sampleUserId)
+        Self(host: sampleHost, userid: sampleUserId, accessToken: nil)
     }
 }
 
@@ -63,7 +63,7 @@ extension PublicTimelineRequest
     /// Sample user statuses request
     static var sample: Self
     {
-        Self(host: sampleHost)
+        Self(host: sampleHost, accessToken: nil)
     }
 }
 
@@ -102,4 +102,6 @@ struct MockRequestApi: MastodonStatusRequest
     var timeFrame: ApiQueryTimeFrame?
     
     var endpoint: String = ""
+    
+    var accessToken: AccessToken? { nil }
 }
