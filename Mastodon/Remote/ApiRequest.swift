@@ -39,6 +39,9 @@ protocol ApiRequest
     
     /// optional Access Token granted by OAuth authentication
     var accessToken: AccessToken? { get }
+    
+    /// version of API
+    var version: String { get }
 }
 
 
