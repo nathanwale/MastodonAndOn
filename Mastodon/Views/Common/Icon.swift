@@ -23,6 +23,10 @@ enum Icon: String, CaseIterable
     case notFound = "questionmark.square.dashed"
     case chevronDown = "chevron.down"
     case chevronUp = "chevron.up"
+    case serverSuccess = "checkmark.icloud.fill"
+    case serverProblem = "exclamationmark.icloud.fill"
+    case serverRetry = "arrow.clockwise.icloud.fill"
+    case serverConnect = "link.icloud.fill"
 }
 
 // Icon extensions
