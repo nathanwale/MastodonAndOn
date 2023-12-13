@@ -69,6 +69,7 @@ extension ApiRequest
     var postData: Data? { nil }
     var version: String { "v1" }
     var pathPrefix: String { "api" }
+    var accessToken: AccessToken? { nil }
 }
 
 
