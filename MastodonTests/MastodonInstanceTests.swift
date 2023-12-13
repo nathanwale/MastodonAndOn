@@ -108,4 +108,11 @@ final class MastodonInstanceTests: XCTestCase
         let translation = config.translation
         XCTAssertEqual(translation.enabled, true)
     }
+    
+    func testRemoteFetchInstance() async throws
+    {
+        let request = InstanceRequest(host: MastodonInstance.defaultHost)
+        let instance = try await request.send()
+        XCTAssertEqual(instance.title, "Mastodon")
+    }
 }
