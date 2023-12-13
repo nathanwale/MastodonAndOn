@@ -46,6 +46,26 @@ extension MastodonInstanceConfiguration
         
         /// Alias for `streaming` as described in docs. Optional
         let streamingApi: URL?
+        
+        /// Coding keys
+        enum CodingKeys: String, CodingKey
+        {
+            case status
+            case streaming
+            case streamingApi
+        }
+        
+        // We have to manually decode, because URLs are sometimes empty strings
+        init(from decoder: Decoder) throws 
+        {
+            // value container
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            
+            // decode
+            self.status = try? container.decodeIfPresent(URL.self, forKey: .status)
+            self.streaming = try? container.decodeIfPresent(URL.self, forKey: .streaming)
+            self.streamingApi = try? container.decodeIfPresent(URL.self, forKey: .streamingApi)
+        }
     }
     
     /// Limits relating to accounts
