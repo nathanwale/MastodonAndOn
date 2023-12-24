@@ -6,10 +6,22 @@
 //
 
 import SwiftUI
+import AuthenticationServices
+import SafariServices
 
 struct UserLoginView: View 
 {
+    @Environment(\.webAuthenticationSession) private var authenticationSession
+    @Environment(\.openURL) var openUrl
+    
     let host: String
+    
+    @State var token: String? = nil
+    
+    var signIn: SignIn
+    {
+        SignIn(host: host)
+    }
     
     @State var username: String = ""
     @State var password: String = ""
@@ -19,10 +31,22 @@ struct UserLoginView: View
     {
         VStack
         {
-            message
-            usernameField
-            passwordField
-            loginButton
+            Button("Sign in")
+            {
+//                print(authenticationSession)
+//                print(signIn.signInUrl ?? "no url")
+                beginSignIn()
+            }
+            .buttonStyle(.borderedProminent)
+            
+            Divider()
+            
+            Text("Token").font(.title)
+            Text(token ?? "Waiting for token...")
+//            message
+//            usernameField
+//            passwordField
+//            loginButton
         }
     }
     
@@ -59,6 +83,42 @@ struct UserLoginView: View
                 print("Logging into \(host), as \(username), with a password that's \(password.count) characters")
             }
             .buttonStyle(.borderedProminent)
+        }
+    }
+    
+    /// Begin sign in
+    func beginSignIn()
+    {
+        // ensure URL isn't nil
+        guard let url = signIn.signInUrl else {
+            print("Invalid url: \(signIn.signInUrl?.description ?? "Is nil")")
+            return
+        }
+        
+        // Async task to request auth
+        Task
+        {
+            do {
+                // get URL from authentication session
+                let returnedUrl = try await authenticationSession.authenticate(
+                    using: url,
+                    callbackURLScheme: signIn.callbackScheme)
+                
+                print("Returned url: \(returnedUrl.absoluteString)")
+                
+                // get token from returned URL
+                let urlComponents = URLComponents(string: returnedUrl.absoluteString)
+                let queryItems = urlComponents?.queryItems
+                
+                // assign token
+                token = queryItems?.first {
+                    $0.name == "code"
+                }?.value
+
+            } catch {
+                // error
+                print(error)
+            }
         }
     }
 }
