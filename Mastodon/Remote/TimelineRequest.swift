@@ -84,3 +84,13 @@ struct UserTimelineRequest: MastodonStatusRequest
     }
 }
 
+///
+/// A home timeline for a user. Requires access token
+///
+struct HomeTimelineRequest: MastodonStatusRequest
+{
+    let host: String
+    var timeFrame: ApiQueryTimeFrame?
+    let accessToken: AccessToken?
+    let endpoint = Endpoint.homeTimeline
+}
