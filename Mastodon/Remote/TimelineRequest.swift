@@ -63,7 +63,7 @@ extension MastodonStatusRequest
 struct PublicTimelineRequest: MastodonStatusRequest
 {
     let host: String
-    let endpoint = "timelines/public"
+    let endpoint = Endpoint.publicTimeline
     var timeFrame: ApiQueryTimeFrame?
     let accessToken: AccessToken?
 }
@@ -79,8 +79,8 @@ struct UserTimelineRequest: MastodonStatusRequest
     var timeFrame: ApiQueryTimeFrame?
     let accessToken: AccessToken?
     
-    var endpoint: String {
-        "accounts/\(userid)/statuses"
+    var endpoint: Endpoint {
+        .userTimeline(userId: userid)
     }
 }
 
