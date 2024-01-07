@@ -12,7 +12,5 @@ struct InstanceRequest: ApiRequest
     typealias Response = MastodonInstance
     
     var host: String
-    let endpoint = "instance"
-    let version = "v2"
-    
+    let endpoint: Endpoint = .instance
 }
