@@ -137,6 +137,26 @@ struct StatusList: View
         .environmentObject(AppNavigation())
 }
 
+#Preview("Home feed, authorised")
+{
+    let source = StatusSource(
+        statuses: [],
+        request: HomeTimelineRequest.sample)
+    
+    return StatusList(source: source)
+        .environmentObject(AppNavigation())
+}
+
+#Preview("Home feed, unauthorised")
+{
+    let source = StatusSource(
+        statuses: [],
+        request: HomeTimelineRequest.sampleUnauthorised)
+    
+    return StatusList(source: source)
+        .environmentObject(AppNavigation())
+}
+
 #Preview("Isolated post") 
 {
     let source = StatusSource(
