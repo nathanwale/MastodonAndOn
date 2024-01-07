@@ -10,6 +10,12 @@ import Foundation
 /// An Access Token granted by OAuth authentication
 typealias AccessToken = String
 
+enum HttpMethod: String
+{
+    case get = "GET"
+    case post = "POST"
+}
+
 ///
 /// Protocol for an API Request
 ///  - subPath: path to endpoint, excludes domain, path prefix, and query string
@@ -22,14 +28,17 @@ protocol ApiRequest
     /// type of response
     associatedtype Response
     
+    /// http method
+    var method: HttpMethod { get }
+    
     /// host of instance
     var host: String { get }
     
     /// path to endpoint, excludes domain and query string
-    var endpoint: String { get }
+    var endpoint: Endpoint { get }
     
     /// optional list of query items
-    var queryItems: [URLQueryItem]? { get }
+    var queryItems: [URLQueryItem] { get }
     
     /// request as URLRequest
     var request: URLRequest { get }
@@ -39,9 +48,6 @@ protocol ApiRequest
     
     /// optional Access Token granted by OAuth authentication
     var accessToken: AccessToken? { get }
-    
-    /// version of API
-    var version: String { get }
 }
 
 
@@ -65,11 +71,10 @@ enum ApiRequestError: Error, Equatable
 ///
 extension ApiRequest
 {
-    var queryItems: [URLQueryItem]? { nil }
+    var queryItems: [URLQueryItem] { [] }
     var postData: Data? { nil }
-    var version: String { "v1" }
-    var pathPrefix: String { "api" }
     var accessToken: AccessToken? { nil }
+    var method: HttpMethod { .get }
 }
 
 
@@ -85,13 +90,24 @@ extension ApiRequest
         
         components.scheme = "https"
         components.host = host
-        
-        components.path = "/\(pathPrefix)/\(version)/\(endpoint)"
-        components.queryItems = queryItems
+        components.path = endpoint.asString
+        if !queryItems.isEmpty {
+            components.queryItems = queryItems
+        }
         
         // assign url components to request
         print("Fetching \(components.url?.absoluteString ?? "<URL is nil!>")")
+        
+        if let first = endpoint.asString.first,
+           first != "/" 
+        {
+            print("Endpoint needs to begin with '/'.", endpoint)
+        }
+        
         var request = URLRequest(url: components.url!)
+        
+        // set HTTP method
+        request.httpMethod = method.rawValue
         
         // if we have POST data, add it to the request
         if let data = postData {
@@ -102,7 +118,10 @@ extension ApiRequest
         
         // use access token if available
         if let accessToken {
+            print("With access token: \(accessToken)")
             request.setValue( "Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        } else {
+            print("No access token")
         }
         
         return request
