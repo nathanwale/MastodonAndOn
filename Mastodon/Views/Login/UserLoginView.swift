@@ -16,7 +16,7 @@ struct UserLoginView: View
     
     let host: String
     
-    @State var token: String? = nil
+    @State var token: AccessToken? = nil
     
     var signIn: SignIn
     {
@@ -90,8 +90,8 @@ struct UserLoginView: View
     func beginSignIn()
     {
         // ensure URL isn't nil
-        guard let url = signIn.signInUrl else {
-            print("Invalid url: \(signIn.signInUrl?.description ?? "Is nil")")
+        guard let url = signIn.authUrl else {
+            print("Invalid url: \(signIn.authUrl?.description ?? "Is nil")")
             return
         }
         
@@ -110,10 +110,19 @@ struct UserLoginView: View
                 let urlComponents = URLComponents(string: returnedUrl.absoluteString)
                 let queryItems = urlComponents?.queryItems
                 
-                // assign token
-                token = queryItems?.first {
+                // get auth token from URL
+                let authCode = queryItems?.first {
                     $0.name == "code"
                 }?.value
+                
+                // request access token
+                let accessRequest = AccessTokenRequest(
+                    host: host,
+                    authCode: authCode!,
+                    redirectUri: signIn.callbackUrl!)
+                
+                token = try await accessRequest.fetchAccessToken()
+                print("Access Token: \(token ?? "N/A")")
 
             } catch {
                 // error
