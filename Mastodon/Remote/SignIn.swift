@@ -12,8 +12,8 @@ struct SignIn
     /// OAuth Callback scheme to use
     let callbackEndpoint = "auth"
     
-    /// URL Endpoint to sign in to
-    let endpoint = "/oauth/authorize"
+    /// URL Endpoint to request auth token
+    let authEndpoint = "/oauth/authorize"
     
     /// URL Scheme to use
     let scheme = "https"
@@ -39,7 +39,7 @@ struct SignIn
     }
     
     /// URL to sign in to
-    var signInUrl: URL?
+    var authUrl: URL?
     {
         // url components object
         var components = URLComponents()
@@ -47,7 +47,7 @@ struct SignIn
         // build base URL
         components.scheme = scheme
         components.host = host
-        components.path = endpoint
+        components.path = authEndpoint
         
         // add query items
         components.queryItems = queryItems
