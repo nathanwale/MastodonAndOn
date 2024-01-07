@@ -98,11 +98,8 @@ extension MastodonCustomEmoji
 struct MockRequestApi: MastodonStatusRequest
 {
     var host: String = ""
-    
     var timeFrame: ApiQueryTimeFrame?
-    
-    var endpoint: String = ""
-    
+    var endpoint = Endpoint.none
     var accessToken: AccessToken? { nil }
 }
 
