@@ -7,16 +7,23 @@
 
 import Foundation
 
+///
+/// Struct for storing keys and secrets
+/// Sounds exciting.
+///
 struct Keys
 {
+    /// Client secret as setup on app author's Mastodon account
     static var clientSecret: String {
         deobfuscate(obfuscatedClientSecret)
     }
     
+    /// Client key as setup on app author's Mastodon account
     static var clientKey: String {
         deobfuscate(obfuscatedClientKey)
     }
     
+    /// Deobfuscate obfuscated keys
     static private func deobfuscate(_ obfuscated: [UInt8]) -> String
     {
         let a = obfuscated.prefix(obfuscated.count / 2)
@@ -24,10 +31,14 @@ struct Keys
         let deobfuscated = zip(a, b).map(^)
         return String(bytes: deobfuscated, encoding: .utf8)!
     }
+   
 }
 
 
 // MARK: - obfuscated strings
+/// 
+/// Obfuscated keys
+///
 fileprivate extension Keys
 {
     static let obfuscatedClientKey: [UInt8] = [210, 100, 56, 214, 233, 93, 17, 154, 228, 48, 92, 255, 129, 88, 34, 36, 141, 237, 213, 142, 196, 234, 127, 178, 173, 83, 53, 43, 232, 223, 9, 194, 0, 100, 24, 113, 132, 6, 122, 242, 192, 249, 89, 184, 40, 104, 228, 196, 31, 73, 170, 165, 127, 19, 186, 176, 111, 85, 84, 221, 166, 138, 212, 165, 217, 74, 219, 195, 31, 4, 115, 173, 150, 99, 141, 110, 11, 46, 51, 183, 100, 41, 153, 141, 140, 0]
