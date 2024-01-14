@@ -122,7 +122,12 @@ struct UserLoginView: View
                     redirectUri: signIn.callbackUrl!)
                 
                 token = try await accessRequest.fetchAccessToken()
-                print("Access Token: \(token ?? "N/A")")
+                if let token {
+                    try KeychainToken.accessToken.updateOrInsert(token)
+                    print("Access Token: \(token)")
+                } else  {
+                    print("Access token unavailable")
+                }
 
             } catch {
                 // error
