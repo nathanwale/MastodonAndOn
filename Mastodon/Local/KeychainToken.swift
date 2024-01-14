@@ -13,6 +13,11 @@ import Foundation
 ///
 struct KeychainToken
 {
+    /// Access token for OAuth
+    static var accessToken: Self {
+        Self(identifier: "mastodon-access-token")
+    }
+    
     /// Service name to store under.
     static let serviceName = "com.nathanwale.mastodonandon.token-storage"
     
