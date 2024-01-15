@@ -12,5 +12,5 @@ import Foundation
 struct Secrets
 {
     /// Access token for use in previews. DO NOT COMMIT REAL VALUES
-    let previewAccessToken: AccessToken = "REPLACE-ME"
+    static let previewAccessToken: AccessToken = "REPLACE-ME"
 }
