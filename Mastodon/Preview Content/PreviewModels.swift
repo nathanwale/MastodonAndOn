@@ -9,6 +9,7 @@ import Foundation
 
 fileprivate let sampleUserId = "110528637375951012" // this is @nwale
 fileprivate let sampleHost = "mastodon.social"
+fileprivate let sampleAccessKey = Secrets.previewAccessToken
 
 // MARK: - convenience functions
 extension JsonLoader
@@ -64,6 +65,22 @@ extension PublicTimelineRequest
     static var sample: Self
     {
         Self(host: sampleHost, accessToken: nil)
+    }
+}
+
+extension HomeTimelineRequest
+{
+    /// Sample home timeline
+    static var sample: Self
+    {
+        Self(host: sampleHost, accessToken: sampleAccessKey)
+    }
+    
+    /// Sample home timeline UNAUTHORISED.
+    /// For testing unauthorised access UI
+    static var sampleUnauthorised: Self
+    {
+        Self(host: sampleHost, accessToken: "unauthorised-token")
     }
 }
 
