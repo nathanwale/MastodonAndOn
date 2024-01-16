@@ -27,6 +27,10 @@ enum Icon: String, CaseIterable
     case serverProblem = "exclamationmark.icloud.fill"
     case serverRetry = "arrow.clockwise.icloud.fill"
     case serverConnect = "link.icloud.fill"
+    case notification = "exclamationmark.bubble"
+    case user = "person.circle"
+    case `public` = "globe"
+    case timeline = "sparkles.rectangle.stack"
 }
 
 // Icon extensions
