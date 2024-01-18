@@ -34,6 +34,25 @@ struct CustomEmojiText: View
     /// Line height, caclulated on appearance
     @State private var lineHeight = UIFont.preferredFont(forTextStyle: .body).pointSize
     
+    /// Init from plain text with [MastodonCustomEmoji]
+    /// - text: Text to parse and display
+    /// - emojis: list of MastodonCustomEmoji
+    init(_ text: String, emojis: [MastodonCustomEmoji])
+    {
+        let parsedText = ParsedText(plainText: text)
+        tokens = parsedText.tokens
+        emojiUrls = Self.emojiListToUrlTable(emojis)
+    }
+    
+    /// Init from tokens with [MastodonCustomEmoji]
+    /// - tokens: Parsed tokens
+    /// - emojis: list of MastodonCustomEmoji
+    init(tokens: [ParsedText.Token], emojis: [MastodonCustomEmoji])
+    {
+        self.tokens = tokens
+        emojiUrls = Self.emojiListToUrlTable(emojis)
+    }
+    
     /// Init from plain text
     /// - text: Text to parse and display
     /// - emojiUrls: Emoji names with associated image URLs
@@ -105,6 +124,16 @@ struct CustomEmojiText: View
                 
             }
         }
+    }
+    
+    /// Emoji list to Emoji URL table
+    private static func emojiListToUrlTable(_ emojiList: [MastodonCustomEmoji]) -> EmojiUrlTable
+    {
+        var result = EmojiUrlTable()
+        for emoji in emojiList {
+            result[emoji.shortcode ?? "--NO-NAME"] = emoji.url
+        }
+        return result
     }
     
     /// Fetch all emojis in `emojiUrls`
