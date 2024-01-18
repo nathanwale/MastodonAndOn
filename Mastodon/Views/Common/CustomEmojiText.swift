@@ -141,8 +141,10 @@ struct CustomEmojiText: View
     {
         var result = EmojiImageTable()
         for (name, url) in emojiUrls {
-            let image = try? await fetchEmoji(name: name, url: url)
-            result[name] = image
+            if tokens.contains(.emoji(name: name)) {
+                let image = try? await fetchEmoji(name: name, url: url)
+                result[name] = image
+            }
         }
         return result
     }
