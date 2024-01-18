@@ -155,6 +155,7 @@ struct CustomEmojiText: View
     {
         var image: UIImage?
         
+        print("Fetching emoji '\(name)' from \(url?.absoluteString ?? "<<NO URL>>")")
         
         if let url
         {
@@ -181,19 +182,19 @@ struct CustomEmojiText: View
 // MARK: - previews
 #Preview
 {
-    let emojis = MastodonCustomEmoji.sampleEmojis
+    let emojis = MastodonCustomEmoji.samples
     
     return VStack
     {
-        CustomEmojiText("Hello! :smile: How's it going? A blob cat angel :ablobcatangel:! Non binary flag :nonbinary_flag:! A blob cat with rainbow :blobcatrainbow:! This one doesn't exist! On purpose! -->:nonexistant:<--", emojiUrls: emojis)
+        CustomEmojiText("Hello! :emoji_wink: How's it going? A blob cat :blobcat:! Alt-Russian flag :flag_wbw:! Hot Boi! :hotboi:! This one doesn't exist! On purpose! -->:nonexistant:<--", emojis: emojis)
             .padding()
         Divider()
-        CustomEmojiText("Problem!: :blobcatrainbow:! How does it handle legit colons? That is, this symbol ':'", emojiUrls: emojis)
+        CustomEmojiText("Problem!: :yikes:! How does it handle legit colons? That is, this symbol ':'", emojis: emojis)
             .padding()
         Divider()
-        CustomEmojiText("This one doesn't have any emojis", emojiUrls: [:])
+        CustomEmojiText("This one doesn't have any emojis", emojis: [])
         Divider()
-        CustomEmojiText("Some larger text emoji! :ablobcatangel:", emojiUrls: emojis)
+        CustomEmojiText("Some larger text emoji! :batman:", emojis: emojis)
             .font(.title)
         Spacer()
     }
