@@ -63,6 +63,16 @@ struct CustomEmojiText: View
         self.emojiUrls = emojiUrls
     }
     
+    /// Init from html text
+    /// - html: HTML to parse and display
+    /// - emojis: Emoji names with associated image URLs
+    init(html: String, emojis: [MastodonCustomEmoji])
+    {
+        let parsedText = ParsedText(html: html)
+        tokens = parsedText.tokens
+        self.emojiUrls = Self.emojiListToUrlTable(emojis)
+    }
+    
     /// Init from parsed tokens
     /// - emojiUrls: Emoji names with associated image URLs
     init(tokens: [ParsedText.Token], emojiUrls: EmojiUrlTable)
@@ -157,7 +167,7 @@ struct CustomEmojiText: View
     {
         var image: UIImage?
         
-        print("Fetching emoji '\(name)' from \(url?.absoluteString ?? "<<NO URL>>")")
+//        print("Fetching emoji '\(name)' from \(url?.absoluteString ?? "<<NO URL>>")")
         
         if let url
         {
@@ -198,6 +208,9 @@ struct CustomEmojiText: View
         Divider()
         CustomEmojiText("Some larger text emoji! :batman:", emojis: emojis)
             .font(.title)
+        Divider()
+        CustomEmojiText(html: "<p>Simple HTML with emoji! :fatyoshi:</p>", emojis: emojis)
+        CustomEmojiText(html: "Simple HTML with emoji! :fatyoshi:", emojis: emojis)
         Spacer()
     }
 }
