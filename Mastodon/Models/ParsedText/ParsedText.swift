@@ -13,7 +13,7 @@ import Foundation
 struct ParsedText
 {
     /// The tokens that are a result of the parsing
-    enum Token
+    enum Token: Equatable
     {
         case lineBreak
         case text(String)
