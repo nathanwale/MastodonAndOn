@@ -15,6 +15,7 @@ enum Endpoint
     case homeTimeline
     case accessTokenRequest
     case userTimeline(userId: MastodonAccountId)
+    case account(id: MastodonAccountId)
     
     var asString: String
     {
@@ -25,6 +26,7 @@ enum Endpoint
             case .homeTimeline: "/api/v1/timelines/home"
             case .userTimeline(let id): "/api/v1/accounts/\(id)/statuses"
             case .accessTokenRequest: "/oauth/token"
+            case .account(let id): "//api/v1/accounts/\(id)"
         }
     }
 }
