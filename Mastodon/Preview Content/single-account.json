@@ -1,0 +1,37 @@
+{
+  "id": "110528637375951012",
+  "username": "nwale",
+  "acct": "nwale",
+  "display_name": "nwale",
+  "locked": false,
+  "bot": false,
+  "discoverable": true,
+  "group": false,
+  "created_at": "2023-10-24T07:11:40.678Z",
+  "note": "<p>“Queen Latifa, give me strength!” — Gene Belcher</p>",
+  "url": "https://mastodon.social/@nwale",
+  "uri": "https://mastodon.social/users/nwale",
+  "avatar": "https://files.mastodon.social/accounts/avatars/110/528/637/375/951/012/original/2d14c64b7a9e1f10.jpeg",
+  "avatar_static": "https://files.mastodon.social/accounts/avatars/110/528/637/375/951/012/original/2d14c64b7a9e1f10.jpeg",
+  "header": "https://files.mastodon.social/accounts/headers/110/528/637/375/951/012/original/c82163b760efda85.jpeg",
+  "header_static": "https://files.mastodon.social/accounts/headers/110/528/637/375/951/012/original/c82163b760efda85.jpeg",
+  "followers_count": 3,
+  "following_count": 44,
+  "statuses_count": 41,
+  "last_status_at": "2023-09-03",
+  "noindex": false,
+  "emojis": [],
+  "roles": [],
+  "fields": [
+    {
+      "name": "Website",
+      "value": "<a href=\"https://looploopbreak.netlify.app\" target=\"_blank\" rel=\"nofollow noopener noreferrer me\" translate=\"no\"><span class=\"invisible\">https://</span><span class=\"\">looploopbreak.netlify.app</span><span class=\"invisible\"></span></a>",
+      "verified_at": null
+    },
+    {
+      "name": "Security Clearance",
+      "value": "Ultramega",
+      "verified_at": null
+    }
+  ]
+}
