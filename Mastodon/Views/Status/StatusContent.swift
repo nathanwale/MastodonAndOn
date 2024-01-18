@@ -17,20 +17,24 @@ struct StatusContent: View
     /// Content as an HTML fragment
     let content: String
     
+    /// Custom Emojis
+    let emojis: [MastodonCustomEmoji]
+    
     /// Content after being parsed
     let parsedContent: ParsedText
     
     // Take HTML fragment as init
-    init(_ content: String)
+    init(_ content: String, emojis: [MastodonCustomEmoji] = [])
     {
         self.content = content
+        self.emojis = emojis
         self.parsedContent = ParsedText(html: content)
     }
         
     // Body
     var body: some View
     {
-        CustomEmojiText(tokens: parsedContent.tokens, emojiUrls: MastodonCustomEmoji.sampleEmojis)
+        CustomEmojiText(tokens: parsedContent.tokens, emojis: emojis)
     }
 }
 
