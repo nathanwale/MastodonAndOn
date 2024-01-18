@@ -47,9 +47,13 @@ extension ParsedText
         let body = doc.body()
         let paras = try body?.select("p").array()
         var tokens = [Token]()
+
         
-        // html has been split into paras
-        if let paras {
+        // has html been split into paras?
+        if let paras,
+           !paras.isEmpty
+        {
+            // parse child nodes of each para
             for (i, p) in paras.enumerated() {
                 for child in p.getChildNodes() {
                     try tokens += parseNode(child)
@@ -60,6 +64,11 @@ extension ParsedText
                     tokens.append(.lineBreak)
                     tokens.append(.lineBreak)
                 }
+            }
+        } else if let body {
+            // otherwise parse child nodes
+            for child in body.getChildNodes() {
+                try tokens += parseNode(child)
             }
         }
         
@@ -135,7 +144,7 @@ extension ParsedText
             default:
                 // assume plain text
                 let text = (try? node.outerHtml()) ?? ""
-                let parsedText = ParsedText(plainText: text)
+                let parsedText = ParsedText(plainText: text.trimmingCharacters(in: ["\n"]))
                 return parsedText.tokens
         }
     }
