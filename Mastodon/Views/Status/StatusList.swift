@@ -82,7 +82,7 @@ struct StatusList: View
                 let screenMidY = screenHeight / 2
                 let threshold: CGFloat = screenHeight / 10
                 let isInMiddle = (midY > screenMidY - threshold)
-                && (midY < screenMidY + threshold)
+                                    && (midY < screenMidY + threshold)
                 if isInMiddle {
                     source.focusedStatus = status
                     Task {
