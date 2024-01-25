@@ -12,11 +12,34 @@ import SwiftUI
 ///
 struct StatusToolBar: View
 {
+    /// Style of the toolbar
+    enum Style
+    {
+        /// Prominent style: coloured background
+        case prominent
+        
+        /// Subdued style: translucent background
+        case subdued
+    }
+    
     /// The status this toolbar belongs to
     let status: MastodonStatus
     
+    /// The style of this toolbar
+    var style = Style.prominent
+    
     /// Navigation object
     @EnvironmentObject private var navigation: AppNavigation
+    
+    /// Background style
+    var background: some View
+    {
+        switch style
+        {
+            case .prominent: Color(uiColor: .tertiarySystemFill)
+            case .subdued: Color(uiColor: .tertiarySystemFill).opacity(0.25)
+        }
+    }
     
     /// Body view
     var body: some View
@@ -54,7 +77,7 @@ struct StatusToolBar: View
         .labelStyle(.iconOnly)
         .padding(.vertical, 5)
         .padding(.horizontal, 10)
-        .background(Color(uiColor: .tertiarySystemFill))
+        .background(background)
         .fixedSize(horizontal: false, vertical: true)
     }
     
@@ -124,8 +147,16 @@ extension StatusToolBar
 
 
 // MARK: - previews
-#Preview("Status tool bar", traits: .fixedLayout(width: 400, height: 50)) {
-    StatusToolBar(status: MastodonStatus.preview)
-        .padding(20)
-        .environmentObject(AppNavigation())
+#Preview("Status tool bar", traits: .fixedLayout(width: 400, height: 50)) 
+{
+    VStack(spacing: 20)
+    {
+        Text("Style prominent")
+        StatusToolBar(status: MastodonStatus.preview)
+        Divider()
+        Text("Style subdued")
+        StatusToolBar(status: MastodonStatus.preview, style: .subdued)
+    }
+    .environmentObject(AppNavigation())
+    .padding(20)
 }
