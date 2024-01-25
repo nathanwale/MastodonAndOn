@@ -135,4 +135,10 @@ extension MastodonInstance
 }
 
 
+// MARK: - notifications preview
+extension MastodonNotification
+{
+    static var samples: [Self] {
+        JsonLoader.fromSample("notifications")
+    }
 }
