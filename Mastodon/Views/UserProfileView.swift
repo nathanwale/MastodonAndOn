@@ -12,6 +12,20 @@ struct UserProfileView: View
     /// Account to display
     let user: MastodonAccount
     
+    /// Instance host
+    let host: String
+    
+    /// Status request
+    var statusRequest: any MastodonStatusRequest {
+        UserTimelineRequest(host: host, userid: user.id, accessToken: nil)
+    }
+    
+    /// Status Source
+    var statusSource: StatusSource {
+        .init(statuses: [], request: statusRequest)
+    }
+    
+    // Body
     var body: some View
     {
         VStack
@@ -20,11 +34,15 @@ struct UserProfileView: View
             
             VStack(alignment: .leading)
             {
-                nameHeader
-                profileNote
-                statistics
-                fields
-                Spacer()
+                VStack(alignment: .leading)
+                {
+                    nameHeader
+                    Divider()
+                    profileNote
+                    statistics
+                    fields
+                    statuses
+                }
             }
             .padding()
         }
@@ -115,9 +133,16 @@ struct UserProfileView: View
     {
         CustomEmojiText(user.note,
                         emojis: user.emojis)
+    // User statuses
+    var statuses: some View
+    {
+        StatusList(source: statusSource)
+            .scrollDisabled(true)
+            .scrollClipDisabled()
     }
 }
 
 #Preview {
-    UserProfileView(user: MastodonAccount.sample)
+    UserProfileView(user: MastodonAccount.sample, host: MastodonInstance.defaultHost)
+        .environmentObject(AppNavigation())
 }
