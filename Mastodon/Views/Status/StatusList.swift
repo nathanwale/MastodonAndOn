@@ -107,62 +107,51 @@ struct StatusList: View
 
 // MARK: - previews
 
+struct Preview_StatusList: View
+{
+    var statuses: [MastodonStatus] = []
+    var request: any MastodonStatusRequest = MockRequestApi()
+    
+    var source: StatusSource
+    {
+        .init(statuses: statuses, request: request)
+    }
+    
+    var body: some View
+    {
+        StatusList(source: source)
+            .environmentObject(AppNavigation())
+    }
+}
+
 #Preview("Sample posts") 
 {
-    let source = StatusSource(
-        statuses: MastodonStatus.previews,
-        request: MockRequestApi())
-    
-    return StatusList(source: source)
-        .environmentObject(AppNavigation())
+    Preview_StatusList(statuses: MastodonStatus.previews)
 }
 
 #Preview("Online user posts")
 {
-    let source = StatusSource(
-        statuses: [],
-        request: UserTimelineRequest.sample)
-    
-    return StatusList(source: source)
-        .environmentObject(AppNavigation())
+    Preview_StatusList(request: UserTimelineRequest.sample)
 }
 
 #Preview("Online public timeline")
 {
-    let source = StatusSource(
-        statuses: [],
-        request: PublicTimelineRequest.sample)
-    
-    return StatusList(source: source)
-        .environmentObject(AppNavigation())
+    Preview_StatusList(request: PublicTimelineRequest.sample)
 }
 
 #Preview("Home feed, authorised")
 {
-    let source = StatusSource(
-        statuses: [],
-        request: HomeTimelineRequest.sample)
-    
-    return StatusList(source: source)
-        .environmentObject(AppNavigation())
+    Preview_StatusList(request: HomeTimelineRequest.sample)
 }
 
 #Preview("Home feed, unauthorised")
 {
-    let source = StatusSource(
-        statuses: [],
-        request: HomeTimelineRequest.sampleUnauthorised)
-    
-    return StatusList(source: source)
-        .environmentObject(AppNavigation())
+    Preview_StatusList(request: HomeTimelineRequest.sampleUnauthorised)
 }
 
 #Preview("Isolated post") 
 {
-    let source = StatusSource(
-        statuses: MastodonStatus.previews.filter { $0.id == "110879987501995566"},
-        request: MockRequestApi())
-    
-    return StatusList(source: source)
-        .environmentObject(AppNavigation())
+    let statusId = "110879987501995566"
+    let statuses = MastodonStatus.previews.filter { $0.id == statusId}
+    return Preview_StatusList(statuses: statuses)
 }
