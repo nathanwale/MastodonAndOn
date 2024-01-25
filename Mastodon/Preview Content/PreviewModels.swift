@@ -129,5 +129,10 @@ struct MockRequestApi: MastodonStatusRequest
 // MARK: - instance preview
 extension MastodonInstance
 {
-    static let sample: Self = JsonLoader.fromSample("instance-data")
+    static var sample: Self {
+        JsonLoader.fromSample("instance-data")
+    }
+}
+
+
 }
