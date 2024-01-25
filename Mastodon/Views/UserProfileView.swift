@@ -32,7 +32,7 @@ struct UserProfileView: View
         {
             bannerImage
             
-            VStack(alignment: .leading)
+            ScrollView
             {
                 VStack(alignment: .leading)
                 {
@@ -44,7 +44,6 @@ struct UserProfileView: View
                     statuses
                 }
             }
-            .padding()
         }
         .ignoresSafeArea()
     }
@@ -62,6 +61,7 @@ struct UserProfileView: View
                 Text("@\(user.acct)")
             }
         }
+        .padding()
     }
     
     // Date created and post count, etc.
@@ -69,20 +69,26 @@ struct UserProfileView: View
     {
         HStack
         {
+            // Date joined
             VStack(alignment: .leading)
             {
                 let joinDate = user.createdAt.relativeFormatted
                 Text("Joined")
                 Text(joinDate)
             }
+            
             Spacer()
-            Text("/")
-                .font(.title)
-                .foregroundStyle(.secondary.opacity(0.5))
+            
+            // Separator
+            Divider()
+            
+            // Stats
             stat(value: user.statusesCount, label: "Statuses")
             stat(value: user.followersCount, label: "Followers")
             stat(value: user.followingCount, label: "Following")
         }
+        .padding()
+        .background(.secondary.opacity(0.25))
     }
     
     // Display a stat with a label
@@ -109,17 +115,19 @@ struct UserProfileView: View
                 {
                     Text(field.name)
                         .font(.headline)
-                    HtmlView(html: field.value)
+                    Spacer()
+                    CustomEmojiText(html: field.value, emojis: user.emojis)
                 }
             }
         }
+        .padding()
+        .background(.secondary.opacity(0.25))
     }
     
     // Banner image
     var bannerImage: some View
     {
         WebImage(url: user.header)
-            
     }
     
     // Profile pic
@@ -131,8 +139,12 @@ struct UserProfileView: View
     // Profile note
     var profileNote: some View
     {
-        CustomEmojiText(user.note,
+        CustomEmojiText(html: user.note,
                         emojis: user.emojis)
+            .font(.headline)
+            .padding()
+    }
+    
     // User statuses
     var statuses: some View
     {
