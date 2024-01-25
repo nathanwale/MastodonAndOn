@@ -57,17 +57,20 @@ extension Icon
 #Preview
 {
     let grids = [GridItem(), GridItem()]
-    return LazyVGrid(columns: grids)
+    return ScrollView
     {
-        ForEach(Icon.allCases, id: \.self)
+        LazyVGrid(columns: grids)
         {
-            icon in
-            VStack
+            ForEach(Icon.allCases, id: \.self)
             {
-                icon.image.imageScale(.large)
-                Text(icon.rawValue).font(.caption)
+                icon in
+                VStack
+                {
+                    icon.image.imageScale(.large)
+                    Text(icon.rawValue).font(.caption)
+                }
+                .padding()
             }
-            .padding()
         }
     }
 }
