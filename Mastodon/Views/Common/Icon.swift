@@ -31,6 +31,12 @@ enum Icon: String, CaseIterable
     case user = "person.circle"
     case `public` = "globe"
     case timeline = "sparkles.rectangle.stack"
+    case follow = "person.crop.circle.badge.plus"
+    case followRequest = "person.crop.circle.badge.questionmark"
+    case quote = "quote.bubble"
+    case personPosted = "person.bubble"
+    case updated = "ellipsis.bubble"
+    case poll = "checklist"
 }
 
 // Icon extensions
