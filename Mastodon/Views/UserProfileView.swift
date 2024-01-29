@@ -25,6 +25,12 @@ struct UserProfileView: View
         .init(statuses: [], request: statusRequest)
     }
     
+    /// User Statuses
+    @State var statuses: [MastodonStatus] = []
+    
+    /// App Navigation
+    @EnvironmentObject private var navigation: AppNavigation
+    
     // Body
     var body: some View
     {
@@ -32,16 +38,19 @@ struct UserProfileView: View
         {
             bannerImage
             
-            ScrollView
+            NavigationStack(path: $navigation.path)
             {
-                VStack(alignment: .leading)
+                ScrollView
                 {
-                    nameHeader
-                    Divider()
-                    profileNote
-                    statistics
-                    fields
-                    statuses
+                    VStack(alignment: .leading)
+                    {
+                        nameHeader
+                        Divider()
+                        profileNote
+                        statistics
+                        fields
+                        statusList
+                    }
                 }
             }
         }
@@ -146,15 +155,24 @@ struct UserProfileView: View
     }
     
     // User statuses
-    var statuses: some View
+    var statusList: some View
     {
-        StatusList(source: statusSource)
-            .scrollDisabled(true)
-            .scrollClipDisabled()
+
+        VStack
+        {
+                ForEach(statuses)
+                {
+                    status in
+                    StatusPost(status)
+                }
+                .scrollDisabled(true)
+
+        }
+    
     }
 }
 
 #Preview {
-    UserProfileView(user: MastodonAccount.sample, host: MastodonInstance.defaultHost)
+    UserProfileView(user: MastodonAccount.sample, host: MastodonInstance.defaultHost, statuses: MastodonStatus.previews)
         .environmentObject(AppNavigation())
 }
