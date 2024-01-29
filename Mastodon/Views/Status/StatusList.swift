@@ -18,6 +18,9 @@ struct StatusList: View
     /// App Navigation
     @EnvironmentObject private var navigation: AppNavigation
     
+    /// Should we be able to scroll through list?
+    var scrollable = true
+    
     /// Insets for Status Posts
     let statusInsets = EdgeInsets(
         top: 10,
@@ -42,6 +45,8 @@ struct StatusList: View
                     // colour and event to update focused status
                     .background(background(status: status))
             }
+            // apply `scrollable`
+            .scrollDisabled(!scrollable)
             // List styling
             .listStyle(.plain)
             .buttonStyle(.borderless)
