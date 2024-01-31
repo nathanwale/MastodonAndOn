@@ -142,3 +142,11 @@ extension MastodonNotification
         JsonLoader.fromSample("notifications")
     }
 }
+
+// MARK: - poll sample
+extension MastodonPoll
+{
+    static var sample: Self {
+        JsonLoader.fromSample("single-poll")
+    }
+}
