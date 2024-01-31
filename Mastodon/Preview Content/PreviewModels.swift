@@ -115,6 +115,14 @@ extension MastodonCustomEmoji
     }
 }
 
+extension [MastodonCustomEmoji]
+{
+    ///Sample emojis
+    static var samples: Self {
+        MastodonCustomEmoji.samples
+    }
+}
+
 
 // MARK: - mock request api
 struct MockRequestApi: MastodonStatusRequest
