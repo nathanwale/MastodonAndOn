@@ -28,6 +28,7 @@ struct WebImage_Previews: PreviewProvider {
         
         let cachedUrl = URL(string: "https://files.mastodon.social/accounts/avatars/110/528/637/375/951/012/original/2d14c64b7a9e1f10.jpeg")!
         let freshUrl = URL(string: "https://picsum.photos/1000")!
+        let dannyDevito = URL(string: "https://i.imgur.com/6gfUHST.jpeg")
         HStack {
             VStack {
                 WebImage(url: cachedUrl)
@@ -35,6 +36,10 @@ struct WebImage_Previews: PreviewProvider {
             }
             VStack {
                 WebImage(url: freshUrl)
+                Text("Fresh")
+            }
+            VStack {
+                WebImage(url: dannyDevito)
                 Text("Fresh")
             }
         }
