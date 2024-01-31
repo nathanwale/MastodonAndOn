@@ -160,13 +160,11 @@ struct UserProfileView: View
 
         VStack
         {
-                ForEach(statuses)
-                {
-                    status in
-                    StatusPost(status)
-                }
-                .scrollDisabled(true)
-
+            ForEach(statuses)
+            {
+                status in
+                StatusPost(status)
+            }
         }
     
     }
