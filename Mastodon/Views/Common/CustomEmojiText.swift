@@ -210,7 +210,10 @@ struct CustomEmojiText: View
             .font(.title)
         Divider()
         CustomEmojiText(html: "<p>Simple HTML with emoji! :fatyoshi:</p>", emojis: emojis)
+        Divider()
         CustomEmojiText(html: "Simple HTML with emoji! :fatyoshi:", emojis: emojis)
+        Divider()
+        CustomEmojiText(html: "Simple HTML with a non-existant emoji! :fake-emoji:", emojis: emojis)
         Spacer()
     }
 }
