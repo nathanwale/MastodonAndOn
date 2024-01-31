@@ -58,14 +58,15 @@ struct PollView: View
             HStack(alignment: .top)
             {
                 // widths
-                let labelWidth = viewWidth * 0.33
+                let labelWidth = viewWidth * 0.5
                 let graphWidth = viewWidth - labelWidth
+                
+                Spacer()
                 
                 // label
                 Text(option.title)
-                    .frame(width: labelWidth)
-                    .background(.yellow.opacity(0.25))
-                    .multilineTextAlignment(.leading)
+                    .multilineTextAlignment(.trailing)
+                    .font(.callout)
                 
                 
                 // bar graph
@@ -81,6 +82,7 @@ struct PollView: View
             let formattedPercentage = percentage.formatted(.percent.precision(.fractionLength(1)))
             barShape(percentage: percentage, width: width)
             Text("\(formattedPercentage)")
+                .foregroundStyle(.primary)
                 .colorInvert()
                 .padding(.leading)
         }
@@ -116,7 +118,6 @@ struct PollView: View
     VStack
     {
         PollView(poll: .sample, text: "Do you accept these terms?")
-        Spacer()
         
         let poll = MastodonPoll(
             id: "0",
@@ -134,6 +135,8 @@ struct PollView: View
             poll: poll,
             text: "We need to check longer poll options, and titles with emoji. :hotboi:",
             emojis: .samples)
+        
+        Spacer()
     }
     .padding()
 }
