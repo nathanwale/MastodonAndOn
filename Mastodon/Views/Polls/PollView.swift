@@ -13,6 +13,7 @@ struct PollView: View
     let text: String
     var emojis: [MastodonCustomEmoji] = []
     let barColour = Color.blue
+    let barBackgroundColour = Color.gray
     let barHeight = 25.0
     
     @State var viewWidth = 300.0
@@ -96,7 +97,7 @@ struct PollView: View
 
             // Full background bar
             RoundedRectangle(cornerSize: cornerSize)
-                .foregroundStyle(barColour.opacity(0.25))
+                .foregroundStyle(barBackgroundColour)
             
             // Graph bar
             let graphWidth = width * percentage
