@@ -19,16 +19,18 @@ struct PollView: View
     
     var body: some View
     {
-        GeometryReader {
-            geo in
-            VStack(alignment: .leading)
+        VStack(alignment: .leading)
+        {
+            CustomEmojiText(html: text, emojis: emojis)
+            options
+        }
+        .background {
+            GeometryReader
             {
-                CustomEmojiText(html: text, emojis: emojis)
-                options
-                Spacer()
-            }
-            .onAppear {
-                viewWidth = geo.size.width
+                geo in
+                Color.clear.onAppear {
+                    viewWidth = geo.size.width
+                }
             }
         }
     }
