@@ -174,14 +174,8 @@ struct NotificationView: View
         {
             if let poll = status?.poll
             {
-                let total = Double(poll.votesCount)
-                ForEach(poll.options, id: \.title)
-                {
-                    option in
-                    let votes = Double(option.votesCount ?? 0)
-                    let percentage = (votes / total).formatted(.percent.precision(.fractionLength(1)))
-                    Text("◎ \(option.title): \(percentage)")
-                }
+                PollView(poll: poll, text: status?.content ?? "Poll:", emojis: poll.emojis)
+                    .foregroundStyle(.secondary)
             }
         }
         .padding(.leading)
