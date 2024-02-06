@@ -37,6 +37,8 @@ enum Icon: String, CaseIterable
     case personPosted = "person.bubble"
     case updated = "ellipsis.bubble"
     case poll = "checklist"
+    case play = "play.circle"
+    case reset = "backward.end"
 }
 
 // Icon extensions
