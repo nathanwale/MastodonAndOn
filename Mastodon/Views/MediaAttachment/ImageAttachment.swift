@@ -9,15 +9,15 @@ import SwiftUI
 
 struct ImageAttachment: View
 {
-    var attachment: MastodonMediaAttachment
+    var url: URL
     var body: some View
     {
-        WebImage(url: attachment.url)
+        WebImage(url: url)
     }
 }
 
 struct ImageAttachment_Previews: PreviewProvider {
     static var previews: some View {
-        ImageAttachment(attachment: MastodonMediaAttachment.previewImageAttachment)
+        ImageAttachment(url: MastodonMediaAttachment.previewImageAttachment.url)
     }
 }
