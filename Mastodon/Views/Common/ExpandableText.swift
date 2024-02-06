@@ -43,14 +43,14 @@ struct ExpandableText: View
                 .onAppear() {
                     guard isTruncated == nil else { return }
                     isTruncated = false
-                    print("Text fits in one line")
+//                    print("Text fits in one line")
                 }
             Color.clear
                 .hidden()
                 .onAppear() {
                     guard isTruncated == nil else { return }
                     isTruncated = true
-                    print("Text DOESN'T fit in one line")
+//                    print("Text DOESN'T fit in one line")
                 }
         }
     }
