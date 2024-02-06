@@ -31,7 +31,6 @@ struct Keys
         let deobfuscated = zip(a, b).map(^)
         return String(bytes: deobfuscated, encoding: .utf8)!
     }
-   
 }
 
 
