@@ -106,6 +106,14 @@ extension MastodonMediaAttachment
     }
 }
 
+extension [MastodonMediaAttachment]
+{
+    /// Sample Image Attachment for previews
+    static var previews: Self {
+        return MastodonMediaAttachment.previews
+    }
+}
+
 // MARK: - Preview custom emoji
 extension MastodonCustomEmoji
 {
