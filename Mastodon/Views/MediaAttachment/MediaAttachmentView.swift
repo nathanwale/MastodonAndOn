@@ -22,6 +22,14 @@ struct MediaAttachmentView: View
         }
     }
     
+    var url: URL {
+        attachment.url
+    }
+    
+    var previewUrl: URL {
+        attachment.previewUrl
+    }
+    
     /// Display attachment
     @ViewBuilder
     var attachmentView: some View
@@ -29,13 +37,16 @@ struct MediaAttachmentView: View
         switch attachment.type
         {
             case .image:
-                ImageAttachment(attachment: attachment)
+                ImageAttachment(url: url)
+                
             case .audio:
-                Text("Audio attachment")
-            case .gifv:
-                Text("Gif attachment")
-            case .video:
-                Text("Video attachment")
+                AudioAttachmentView(url: url)
+                
+            case .video, .gifv:
+                VideoAttachmentView(
+                    url: url,
+                    previewUrl: previewUrl)
+                
             case .unknown:
                 Text("Unknown attachment")
                 
@@ -57,8 +68,22 @@ struct MediaAttachmentView: View
     }
 }
 
-struct MediaAttachment_Previews: PreviewProvider {
-    static var previews: some View {
-        MediaAttachmentView(attachment: .previewImageAttachment)
+#Preview("Image")
+{
+    MediaAttachmentView(attachment: .previewImageAttachment)
+}
+
+#Preview("Many")
+{
+    ScrollView
+    {
+        VStack
+        {
+            ForEach(MastodonMediaAttachment.previews)
+            {
+                attachment in
+                MediaAttachmentView(attachment: attachment)
+            }
+        }
     }
 }
