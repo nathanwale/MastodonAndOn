@@ -40,7 +40,7 @@ struct WebSocketStream
         guard let task else { return }
         
         task.resume()
-        let message = config.asJson
+//        let message = config.asJson
     }
 }
 
