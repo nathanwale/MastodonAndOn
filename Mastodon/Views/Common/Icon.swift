@@ -43,7 +43,7 @@ enum Icon: String, CaseIterable
 extension Icon
 {
     /// Icon as SwiftUI Image
-    var image: some View {
+    var image: Image {
         Image(systemName: self.rawValue)
     }
     
