@@ -166,3 +166,11 @@ extension MastodonPoll
         JsonLoader.fromSample("single-poll")
     }
 }
+
+// MARK: - preview card sample
+extension MastodonPreviewCard
+{
+    static var samples: [Self] {
+        JsonLoader.fromSample("multiple-preview-cards")
+    }
+}
