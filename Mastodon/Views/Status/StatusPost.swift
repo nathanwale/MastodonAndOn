@@ -13,8 +13,7 @@ import SwiftUI
 ///
 struct StatusPost: View
 {
-    /// Type for emoji table
-    typealias EmojiUrlTable = CustomEmojiText.EmojiUrlTable
+
     
     /// The Status for this view
     var status: MastodonStatus
@@ -32,14 +31,8 @@ struct StatusPost: View
     }
     
     /// Custom emojis for this post
-    var emojis: EmojiUrlTable {
-        let allEmojis = post.emojis + account.emojis
-        return allEmojis.reduce(into: EmojiUrlTable()) {
-            dict, emoji in
-            if let shortcode = emoji.shortcode {
-                dict[shortcode] = emoji.staticUrl
-            }
-        }
+    var emojis: [MastodonCustomEmoji] {
+        post.emojis + account.emojis
     }
     
     // Init
@@ -93,7 +86,7 @@ struct StatusPost: View
             VStack(alignment: .leading)
             {
                 // Display name
-                CustomEmojiText(account.displayName, emojiUrls: emojis)
+                CustomEmojiText(account.displayName, emojis: emojis)
                     .font(.headline)
                     .lineLimit(1)
                 HStack
@@ -113,7 +106,7 @@ struct StatusPost: View
     /// Content of post
     var content: some View
     {
-        StatusContent(post.content)
+        StatusContent(post.content, emojis: emojis)
     }
     
     /// Reblogged by, if reblog exists
