@@ -65,6 +65,14 @@ struct StatusPost: View
             
             // Attachments
             mediaAttachments
+            
+            // Preview card if available
+            if let card = post.card {
+                PreviewCardView(card: card)
+                    .padding()
+            }
+            
+            // Toolbar
             StatusToolBar(status: status)
         }
         .padding(0)
