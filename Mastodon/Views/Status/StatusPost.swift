@@ -53,14 +53,17 @@ struct StatusPost: View
     {
         VStack(alignment: .leading)
         {
+            // Post content
             VStack(alignment: .leading)
             {
                 rebloggedBy
                 profileStack
                 content
+                    .padding(.bottom)
             }
             .padding(.horizontal)
             
+            // Attachments
             mediaAttachments
             StatusToolBar(status: status)
         }
