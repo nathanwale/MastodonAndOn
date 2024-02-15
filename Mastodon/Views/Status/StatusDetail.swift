@@ -7,29 +7,55 @@
 
 import SwiftUI
 
-struct StatusDetail: View 
+///
+/// View Status content and ancestors and replies
+/// - status: The Status to display
+/// - context: optional Context to use, otherwise will attempt to fetch from server
+///
+struct StatusDetail: View
 {
+    /// The Status to display
     let status: MastodonStatus
-    let context: MastodonStatus.Context?
+    
+    /// Optional provided Context
+    @State var context: MastodonStatus.Context? = nil
+    
+    /// Current Status ID
     @Namespace var currentStatusId
     
+    /// Instance host
+    let host = MastodonInstance.defaultHost
+    
+    /// Ancestors: Statuses this Status in reply to
     var ancestors: [MastodonStatus]
     {
         context?.ancestors ?? []
     }
     
+    /// Descendants: Replies to this Status
     var descendants: [MastodonStatus]
     {
         context?.descendants ?? []
     }
     
-    init(_ status: MastodonStatus, context: MastodonStatus.Context? = nil)
+    /// Attempt to fetch Context from remote server
+    func fetchContext() async
     {
-        self.status = status
-        self.context = context
-    }
+        let request = StatusContextRequest(
+            host: host,
+            statusIdentifier: status.id)
         
-    var body: some View 
+        do {
+            print("Fetching context for StatusID:", status.id!)
+            context = try await request.send()
+        } catch {
+            print(error)
+        }
+    }
+       
+    // MARK: - subviews
+    /// Main view
+    var body: some View
     {
         ScrollViewReader
         {
@@ -53,8 +79,12 @@ struct StatusDetail: View
                 }
             }
         }
+        .task {
+            await fetchContext()
+        }
     }
     
+    /// Prior or Replies indicator
     func indicator(_ text: String, icon: Icon) -> some View
     {
         HStack
@@ -70,6 +100,7 @@ struct StatusDetail: View
         .background(Color.secondary)
     }
     
+    /// A list of Statuses
     func statusList(_ statuses: [MastodonStatus]) -> some View
     {
         VStack
@@ -82,10 +113,11 @@ struct StatusDetail: View
     }
 }
 
-#Preview 
+
+// MARK: - previews
+#Preview
 {
     StatusDetail(
-        MastodonStatus.preview,
-        context: MastodonStatus.previewContext
+        status: MastodonStatus.preview
     )
 }
