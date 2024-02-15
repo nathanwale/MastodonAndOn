@@ -35,6 +35,15 @@ struct StatusPost: View
         post.emojis + account.emojis
     }
     
+    /// User has chosen to reveal sensitive content
+    @State var hasRevealedSensitiveContent = false
+    
+    /// Content should be hidden if it's marked `sensitive=true` and user hasn't chosen to reveal it
+    var shouldHideContent: Bool {
+        post.sensitive && !hasRevealedSensitiveContent
+    }
+    
+    
     // Init
     init(_ status: MastodonStatus)
     {
@@ -46,11 +55,39 @@ struct StatusPost: View
     {
         VStack(alignment: .leading)
         {
-            // Post content
-            VStack(alignment: .leading)
+            // Profile
+            VStack
             {
                 rebloggedBy
                 profileStack
+            }
+            .padding([.leading, .trailing])
+            
+                        
+            // Post content or content warning
+            if shouldHideContent {
+                contentWarning
+            } else {
+                // Show re-hide
+                if hasRevealedSensitiveContent {
+                    hideSensitiveContentButton
+                }
+                postContent
+            }
+            
+            // Toolbar
+            StatusToolBar(status: status)
+        }
+        .padding(0)
+    }
+    
+    /// Post content
+    var postContent: some View
+    {
+        VStack
+        {
+            VStack(alignment: .leading)
+            {
                 content
                     .padding(.bottom)
             }
@@ -64,11 +101,48 @@ struct StatusPost: View
                 PreviewCardView(card: card)
                     .padding()
             }
-            
-            // Toolbar
-            StatusToolBar(status: status)
         }
-        .padding(0)
+    }
+    
+    /// Content warning
+    var contentWarning: some View
+    {
+        HStack(alignment: .top)
+        {
+            Icon.contentWarning.image.font(.system(size: 60))
+            VStack(alignment: .leading)
+            {
+                Text("Content warning. Tap to reveal")
+                    .textCase(.uppercase)
+                    .font(.caption2)
+                Text(post.spoilerText)
+                    .fixedSize(horizontal: false, vertical: true) // ensures text wraps
+            }
+            Spacer()
+        }
+        .padding()
+        .background(.primary.opacity(0.2))
+        .onTapGesture {
+            hasRevealedSensitiveContent = true
+        }
+    }
+    
+    /// Hide sensitive content button
+    var hideSensitiveContentButton: some View
+    {
+        HStack
+        {
+            Spacer()
+            Icon.contentWarning.image
+            Text("Hide sensitive content")
+            Icon.chevronDown.image
+            Spacer()
+        }
+        .padding(5)
+        .background(.primary.opacity(0.2))
+        .onTapGesture {
+            hasRevealedSensitiveContent = false
+        }
     }
     
     /// Profile image
@@ -119,8 +193,8 @@ struct StatusPost: View
                 Icon.reblog.image
                 Text("reblogged by \(status.account.displayName)")
                     .font(.caption)
+                Spacer()
             }
-            .padding(0)
             .foregroundColor(.secondary)
         }
     }
@@ -149,6 +223,7 @@ struct StatusPost: View
         StatusPost(status)
             .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 20, trailing: 0))
             .listRowSeparator(.hidden)
+            .environmentObject(AppNavigation())
     }
     .listStyle(.plain)
 }
