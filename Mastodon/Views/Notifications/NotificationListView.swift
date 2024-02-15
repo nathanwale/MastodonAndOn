@@ -54,14 +54,17 @@ struct NotificationListView: View
     /// List of notifications
     var list: some View
     {
-        VStack(alignment: .leading)
+        ScrollView
         {
-            ForEach(notifications ?? [])
+            VStack(alignment: .leading)
             {
-                notification in
-                NotificationView(notification: notification)
-                Divider()
-                    .padding(.top)
+                ForEach(notifications ?? [])
+                {
+                    notification in
+                    NotificationView(notification: notification)
+                    Divider()
+                        .padding(.top)
+                }
             }
         }
     }
@@ -89,14 +92,12 @@ struct Preview_NotificationList: View
 
     var body: some View
     {
-        ScrollView
-        {
-            NotificationListView(
-                accessToken: accessToken ?? "--none",
-                host: MastodonInstance.defaultHost,
-                notifications: notifications)
-            .padding()
-        }
+        NotificationListView(
+            accessToken: accessToken ?? "--none",
+            host: MastodonInstance.defaultHost,
+            notifications: notifications
+        )
+        .padding()
     }
 }
 
