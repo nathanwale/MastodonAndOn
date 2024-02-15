@@ -31,6 +31,17 @@ struct UserProfileView: View
     /// App Navigation
     @EnvironmentObject private var navigation: AppNavigation
     
+    /// Fetch user statuses
+    func fetchStatuses() async
+    {
+        do {
+            statuses = try await statusRequest.send()
+        } catch {
+            print(error)
+        }
+    }
+    
+    // MARK: - subviews
     // Body
     var body: some View
     {
@@ -55,6 +66,11 @@ struct UserProfileView: View
             }
         }
         .ignoresSafeArea()
+        .task {
+            if statuses.isEmpty {
+                await fetchStatuses()
+            }
+        }
     }
     
     // Display name and account ID
@@ -170,7 +186,12 @@ struct UserProfileView: View
     }
 }
 
+
+// MARK: - previews
 #Preview {
-    UserProfileView(user: MastodonAccount.sample, host: MastodonInstance.defaultHost, statuses: MastodonStatus.previews)
+    UserProfileView(
+        user: MastodonAccount.sample,
+        host: MastodonInstance.defaultHost
+    )
         .environmentObject(AppNavigation())
 }
