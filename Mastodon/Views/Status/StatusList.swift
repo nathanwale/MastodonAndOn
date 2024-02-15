@@ -55,7 +55,7 @@ struct StatusList: View
             // Configure navigation
             .navigationDestination(for: MastodonStatus.self) {
                 status in
-                StatusDetail(status)
+                StatusDetail(status: status)
             }
             // Load source of Statuses
             .task {
