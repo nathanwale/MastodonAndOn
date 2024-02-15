@@ -14,7 +14,7 @@ struct RootTabView: View
 {
     @State var selectedTab = Tab.homeTimeline
     
-    /// Tabs
+    /// Represents each tab
     enum Tab: CaseIterable, Identifiable
     {
         case homeTimeline
@@ -22,6 +22,7 @@ struct RootTabView: View
         case publicTimeline
         case userProfile
         
+        /// Title for Tab type
         var title: String
         {
             switch self 
@@ -37,11 +38,13 @@ struct RootTabView: View
             }
         }
         
+        /// ID for Tab type
         var id: String
         {
             self.title
         }
         
+        /// Icon for tab type
         var icon: Icon
         {
             switch self {
@@ -57,6 +60,7 @@ struct RootTabView: View
         }
     }
     
+    // MARK: - subviews
     // body
     var body: some View
     {
@@ -75,7 +79,8 @@ struct RootTabView: View
             }
         }
     }
-        
+    
+    /// Logged in user's timeline
     var homeTimeline: some View
     {
         // timeline status source
@@ -84,19 +89,25 @@ struct RootTabView: View
             request: HomeTimelineRequest.sample)
         
         return StatusList(source: source)
-            .environmentObject(AppNavigation())
     }
     
+    /// Logged in user's notifications
     var notificationsView: some View
     {
-        Text("You have no notifications. Sad.")
+        NotificationListView(
+            accessToken: Secrets.previewAccessToken,
+            host: MastodonInstance.defaultHost
+        )
+            .padding()
     }
     
+    /// Logged in user's profile
     var userProfile: some View
     {
-        Text("User profile")
+        UserProfileView(user: .sample, host: MastodonInstance.defaultHost)
     }
     
+    /// Public timeline
     var publicTimeline: some View
     {
         // timeline status source
@@ -105,10 +116,9 @@ struct RootTabView: View
             request: PublicTimelineRequest.sample)
         
         return StatusList(source: source)
-            .environmentObject(AppNavigation())
     }
     
-    // return a view for a particular tab
+    /// Select view for a Tab type
     @ViewBuilder
     func viewFor(tab: Tab) -> some View
     {
@@ -125,6 +135,9 @@ struct RootTabView: View
     }
 }
 
+
+// MARK: - previews
 #Preview {
     RootTabView()
+        .environmentObject(AppNavigation())
 }
