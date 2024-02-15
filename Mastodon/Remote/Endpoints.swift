@@ -17,6 +17,7 @@ enum Endpoint
     case userTimeline(userId: MastodonAccountId)
     case account(id: MastodonAccountId)
     case notifications
+    case statusContext(id: MastodonStatus.Identifier)
     
     var asString: String
     {
@@ -29,6 +30,7 @@ enum Endpoint
             case .accessTokenRequest: "/oauth/token"
             case .account(let id): "/api/v1/accounts/\(id)"
             case .notifications: "/api/v1/notifications"
+            case .statusContext(let id): "/api/v1/statuses/\(id)/context"
         }
     }
 }
