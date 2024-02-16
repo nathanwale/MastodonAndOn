@@ -94,7 +94,7 @@ struct StatusPost: View
             .padding(.horizontal)
             
             // Attachments
-            mediaAttachments
+            MultipleMediaAttachment(attachments: post.mediaAttachments)
             
             // Preview card if available
             if let card = post.card {
@@ -196,19 +196,6 @@ struct StatusPost: View
                 Spacer()
             }
             .foregroundColor(.secondary)
-        }
-    }
-    
-    /// Media attachments
-    var mediaAttachments: some View
-    {
-        VStack
-        {
-            ForEach(post.mediaAttachments)
-            {
-                attachment in
-                MediaAttachmentView(attachment: attachment)
-            }
         }
     }
 }
