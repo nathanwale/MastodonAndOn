@@ -16,8 +16,9 @@ struct ImageAttachment: View
     }
 }
 
-struct ImageAttachment_Previews: PreviewProvider {
-    static var previews: some View {
-        ImageAttachment(url: MastodonMediaAttachment.previewImageAttachment.url)
-    }
+#Preview 
+{
+    let url = URL(string: "https://files.mastodon.social/accounts/avatars/110/528/637/375/951/012/original/2d14c64b7a9e1f10.jpeg")!
+    
+    return ImageAttachment(url: url)
 }
