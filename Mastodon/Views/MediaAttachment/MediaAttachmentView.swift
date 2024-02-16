@@ -7,12 +7,29 @@
 
 import SwiftUI
 
+///
+/// View Media Attachment
+///
 struct MediaAttachmentView: View
 {
+    /// Attachment to display
     var attachment: MastodonMediaAttachment
     
+    /// Should we show full description?
     @State private var showFullDescription = false
     
+    /// Source URL of attachment
+    var url: URL {
+        attachment.url
+    }
+    
+    /// URL of preview for Videos
+    var previewUrl: URL {
+        attachment.previewUrl
+    }
+    
+    // MARK: - subviews
+    /// Main view
     var body: some View
     {
         VStack(spacing: 0)
@@ -20,14 +37,6 @@ struct MediaAttachmentView: View
             attachmentView
             description
         }
-    }
-    
-    var url: URL {
-        attachment.url
-    }
-    
-    var previewUrl: URL {
-        attachment.previewUrl
     }
     
     /// Display attachment
@@ -68,6 +77,8 @@ struct MediaAttachmentView: View
     }
 }
 
+
+// MARK: - Previews
 #Preview("Image")
 {
     MediaAttachmentView(attachment: .previewImageAttachment)
