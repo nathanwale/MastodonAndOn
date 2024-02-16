@@ -34,7 +34,11 @@ struct StatusContent: View
     // Body
     var body: some View
     {
-        CustomEmojiText(tokens: parsedContent.tokens, emojis: emojis)
+        HStack
+        {
+            CustomEmojiText(tokens: parsedContent.tokens, emojis: emojis)
+            Spacer()
+        }
     }
 }
 
