@@ -20,13 +20,7 @@ struct MultipleMediaAttachment: View
     /// For arranging in a 2 x N grid
     var maxEvenAttachments: [MastodonMediaAttachment]
     {
-        if attachments.count.isMultiple(of: 2) {
-            // even, return whole list
-            return attachments
-        } else {
-            // odd, return list minus tail
-            return attachments.dropLast()
-        }
+        attachments.dropLast(attachments.count % 2)
     }
     
     /// Tail attachment if list is odd
