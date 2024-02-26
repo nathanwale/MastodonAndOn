@@ -31,8 +31,7 @@ struct MastodonMediaAttachment: Codable, Equatable, Identifiable
     var remoteUrl: URL?
     
     /// Metadata as a Dictionary
-    /// --- TODO: Not sure how to decode this ill-defined object
-    //    var meta: [String: JSON]
+    var meta: Meta?
     
     /// Alt. text for vision impaired and when media is yet to load
     /// Is optional, despite what the docs say
@@ -60,5 +59,21 @@ struct MastodonMediaAttachment: Codable, Equatable, Identifiable
         
         /// Audio track
         case audio = "audio"
+    }
+    
+    ///
+    /// Meta information
+    /// (Only some parts are decoded)
+    /// 
+    struct Meta: Codable, Equatable
+    {
+        /// Length of media as string
+        let length: String?
+        
+        /// Length of media in seconds
+        let duration: Double?
+        
+        /// Aspect ratio
+        let aspect: Double?
     }
 }
