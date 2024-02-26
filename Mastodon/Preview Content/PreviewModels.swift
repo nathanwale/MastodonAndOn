@@ -104,6 +104,16 @@ extension MastodonMediaAttachment
     static var previewImageAttachment: MastodonMediaAttachment {
         return previews[0]
     }
+    
+    /// Sample Video attachment
+    static var previewVideoAttachment: MastodonMediaAttachment {
+        return previews[2]
+    }
+    
+    /// Sample Audio attachment
+    static var previewAudioAttachment: MastodonMediaAttachment {
+        return previews[4]
+    }
 }
 
 extension [MastodonMediaAttachment]
