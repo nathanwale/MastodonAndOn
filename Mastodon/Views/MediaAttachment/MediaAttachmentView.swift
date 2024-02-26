@@ -7,6 +7,32 @@
 
 import SwiftUI
 
+// MARK: - MediaAttachmentViewable
+///
+/// Protocol for Media Attachment Views
+///
+protocol MediaAttachmentViewable
+{
+    var attachment: MastodonMediaAttachment { get }
+    var preview: AnyView { get }
+    var expandedView: AnyView { get }
+}
+
+extension MediaAttachmentViewable
+{
+    /// Source URL of attachment
+    var url: URL {
+        attachment.url
+    }
+    
+    /// URL of preview for Videos
+    var previewUrl: URL {
+        attachment.previewUrl
+    }
+}
+
+
+// MARK: - MediaAttachmentView
 ///
 /// View Media Attachment
 ///
@@ -18,6 +44,9 @@ struct MediaAttachmentView: View
     /// Should we show full description?
     @State private var showFullDescription = false
     
+    /// Are we showing the expanded view?
+    @State private var viewIsExpanded = false
+    
     /// Source URL of attachment
     var url: URL {
         attachment.url
@@ -28,33 +57,31 @@ struct MediaAttachmentView: View
         attachment.previewUrl
     }
     
-    // MARK: - subviews
-    /// Main view
-    var body: some View
-    {
-        VStack(spacing: 0)
-        {
-            attachmentView
-            description
-        }
+    /// Description of attachment
+    var description: String? {
+        attachment.description
     }
     
-    /// Display attachment
+    /// Formatted length of media
+    var formattedLength: String? {
+        attachment.meta?.length
+    }
+    
+    /// Specialised view for attachment
     @ViewBuilder
-    var attachmentView: some View
+    var previewView: some View
     {
+        // Have to assign attachment here
         switch attachment.type
         {
             case .image:
-                ImageAttachment(url: url)
+                ImageAttachment.Preview(imageUrl: url)
                 
             case .audio:
-                AudioAttachmentView(url: url)
+                AudioAttachmentView.Preview(totalTimeFormatted: formattedLength)
                 
             case .video, .gifv:
-                VideoAttachmentView(
-                    url: url,
-                    previewUrl: previewUrl)
+                VideoAttachmentView.Preview(previewUrl: previewUrl, formattedLength: formattedLength)
                 
             case .unknown:
                 Text("Unknown attachment")
@@ -62,9 +89,49 @@ struct MediaAttachmentView: View
         }
     }
     
+    /// Specialised view for attachment
+    @ViewBuilder
+    var expandedView: some View
+    {
+        // Have to assign attachment here
+        switch attachment.type
+        {
+            case .image:
+                ImageAttachment.Expanded(imageUrl: url, description: description)
+                
+            case .audio:
+                AudioAttachmentView.Expanded(url: url)
+                
+            case .video, .gifv:
+                VideoAttachmentView.Expanded(url: url, previewUrl: previewUrl)
+                
+            case .unknown:
+                Text("Unknown attachment")
+        }
+    }
+ 
+    
+    // MARK: - subviews
+    /// Main view
+    @ViewBuilder
+    var body: some View
+    {
+        VStack
+        {
+            previewView
+                .onTapGesture {
+                    viewIsExpanded.toggle()
+                }
+                .sheet(isPresented: $viewIsExpanded) {
+                    expandedView
+                }
+            descriptionView
+        }
+    }
+  
     /// Description, if present
     @ViewBuilder
-    var description: some View
+    var descriptionView: some View
     {
         if let text = attachment.description,
            text != ""
