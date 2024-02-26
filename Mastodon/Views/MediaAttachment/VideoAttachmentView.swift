@@ -8,148 +8,135 @@
 import SwiftUI
 import AVKit
 
-struct VideoAttachmentView: View
+struct VideoAttachmentView
 {
-    /// Source URL for video
-    let url: URL
-    
-    /// Preview image URL
-    let previewUrl: URL
-    
-    /// Aspect ratio
-    var aspectRatio = 1.0
-    
-    /// AV Player
-    let player: AVPlayer
-    
-    /// Should we show the play button?
-    @State private var isPlaying = false
-    
-    /// Notification info
-    var notificationInfo: [String: URL] {
-        ["url": url]
+    /// Image with play button
+    static func overlay(previewUrl: URL) -> some View
+    {
+        // Preview image
+        WebImage(url: previewUrl)
+            .overlay {
+                // Play button
+                Self.playButtonOverlay
+            }
     }
     
-    /// Init with URL, preview URL and optional aspect ratio
-    init(url: URL, previewUrl: URL, aspectRatio: Double = 1.0)
+    // Overlay of Play button
+    static var playButtonOverlay: some View
     {
-        self.url = url
-        self.previewUrl = previewUrl
-        self.player = AVPlayer(url: url)
+        Icon.play.image
+            .resizable()
+            .scaledToFit()
+            .scaleEffect(0.5)
+            .foregroundStyle(.white.opacity(0.75))
+            .shadow(radius: 10)
     }
     
-    /// Body view
-    var body: some View
+    ///
+    /// Preview View
+    /// - previewUrl: Source of preview image
+    ///
+    struct Preview: View 
     {
-        VStack
+        /// Source of preview image
+        let previewUrl: URL
+        
+        /// Formatted length of video
+        let formattedLength: String?
+        
+        /// Main View
+        var body: some View
         {
-            if isPlaying {
-                videoPlayer
-            } else {
-                overlay
+            ZStack(alignment: .bottomTrailing)
+            {
+                VideoAttachmentView.overlay(previewUrl: previewUrl)
+                Text(formattedLength ?? "--:--:--")
+                    .foregroundStyle(.white)
+                    .padding(5)
+                    .background(.black.opacity(0.75))
             }
         }
-        .aspectRatio(aspectRatio, contentMode: .fill)
     }
     
-    /// The video player view
-    var videoPlayer: some View
+    ///
+    /// Expanded View
+    /// - url: Source of video
+    ///
+    struct Expanded: View 
     {
-        VideoPlayer(player: player)
-            .onAppear {
-                player.seek(to: .zero)
-                player.play()
-                NotificationCenter.default.postMediaIsPlaying(url: url)
-                NotificationCenter.default.addMediaIsPlayingObserver(url: url) {
-                    player.pause()
-                    isPlaying = false
+        /// Source of video
+        let url: URL
+        
+        /// Source of preview image
+        let previewUrl: URL
+        
+        /// AV Player
+        let player: AVPlayer
+        
+        /// Should we show the play button?
+        @State private var isPlaying = false
+        
+        /// Init with url and previewUrl
+        init(url: URL, previewUrl: URL)
+        {
+            self.url = url
+            self.previewUrl = previewUrl
+            self.player = .init(url: url)
+        }
+        
+        /// Main View
+        var body: some View
+        {
+            VStack
+            {
+                if isPlaying {
+                    videoPlayer
+                } else {
+                    VideoAttachmentView.overlay(previewUrl: previewUrl)
+                        .onTapGesture {
+                            isPlaying = true
+                        }
                 }
-                print("Playing video \(player.currentItem?.description ?? "<<NONE>>")")
             }
-            .onDisappear {
-                NotificationCenter.default.removeMediaIsPlayingObserver()
-            }
-    }
-    
-    /// Play button overlay
-    @ViewBuilder
-    var overlay: some View
-    {
-        ZStack
+        }
+        
+        /// The video player view
+        var videoPlayer: some View
         {
-            // Preview image
-            WebImage(url: previewUrl)
-            
-            // Play button
-            Icon.play.image
-                .resizable()
-                .scaledToFit()
-                .scaleEffect(0.5)
-                .foregroundStyle(.white.opacity(0.75))
-                .shadow(radius: 10)
-        }
-        .onTapGesture {
-            isPlaying = true
+            VideoPlayer(player: player)
+                .onAppear {
+                    player.seek(to: .zero)
+                    player.play()
+                    NotificationCenter.default.postMediaIsPlaying(url: url)
+                    NotificationCenter.default.addMediaIsPlayingObserver(url: url) {
+                        player.pause()
+                        isPlaying = false
+                        print("Playing video at \(url)")
+                    }
+                }
+                .onDisappear {
+                    NotificationCenter.default.removeMediaIsPlayingObserver()
+                }
         }
     }
-    
-//    /// Post notification that media has begun playing
-//    func postNotification()
-//    {
-//        NotificationCenter.default.post(
-//            name: Keys.beganPlayingMediaNotification,
-//            object: nil,
-//            userInfo: notificationInfo)
-//        print("Posting notification for \(player.currentItem?.description ?? "<<NONE>>")")
-//    }
-//    
-//    /// Add Observer to notify that media is being played
-//    /// Stop playing if notification is for a different player
-//    func addObserver()
-//    {
-//        NotificationCenter.default.addObserver(
-//            forName: Keys.beganPlayingMediaNotification,
-//            object: nil,
-//            queue: nil)
-//        {
-//            notification in
-//                        
-//            if let notifiedUrl = notification.userInfo?["url"] as? URL
-//            {
-//                // pause this player, if another player has started
-//                if notifiedUrl != url {
-//                    player.pause()
-//                    isPlaying = false
-//                    print("Pausing video for \(notifiedUrl)")
-//                }
-//            } else {
-//                print("Notification object is not an AVPlayerItem")
-//            }
-//        }
-//    }
-//    
-//    /// Remove observer
-//    func removeObserver()
-//    {
-//        NotificationCenter.default.removeObserver(
-//            self, name: Keys.beganPlayingMediaNotification, object: nil)
-//    }
+
 }
 
 
 // MARK: - previews
 #Preview
 {
-    VStack(spacing: 20)
+    let attachment = MastodonMediaAttachment.previewVideoAttachment
+    let videoUrl = attachment.url
+    let previewUrl = attachment.previewUrl
+    let length = attachment.meta?.length
+    
+    return VStack(spacing: 20)
     {
-        
-        VideoAttachmentView(
-            url: URL(string: "https://files.mastodon.social/media_attachments/files/022/546/306/original/dab9a597f68b9745.mp4")!,
-            previewUrl: URL(string: "https://files.mastodon.social/media_attachments/files/022/546/306/small/dab9a597f68b9745.png")!,
-            aspectRatio: 1.333
-        )
-        VideoAttachmentView(
-            url: URL(string: "https://files.mastodon.social/cache/media_attachments/files/111/858/806/390/635/983/original/60aafea132dd5517.mp4")!,
-            previewUrl: URL(string: "https://files.mastodon.social/cache/media_attachments/files/111/858/806/390/635/983/small/60aafea132dd5517.png")!)
+        VideoAttachmentView.Preview(previewUrl: previewUrl, formattedLength: length)
+        Text("Preview")
+        VideoAttachmentView.Expanded(url: videoUrl, previewUrl: previewUrl)
+        Text("Expanded")
+        Spacer()
     }
 }
