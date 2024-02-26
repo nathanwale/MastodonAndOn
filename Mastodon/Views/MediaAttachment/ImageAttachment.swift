@@ -69,7 +69,7 @@ struct ImageAttachment
                 HStack
                 {
                     Spacer()
-                    Text(description)
+                    ExpandableText(description)
                     Spacer()
                 }
                 .padding(5)
