@@ -92,6 +92,16 @@ extension HomeTimelineRequest
     }
 }
 
+extension HashtagTimelineRequest
+{
+    /// Sample hashtag timeline
+    static var sample: Self
+    {
+        .init(host: sampleHost, tag: "catsofmastodon")
+    }
+}
+
+
 // MARK: - Preview attachments
 extension MastodonMediaAttachment
 {
