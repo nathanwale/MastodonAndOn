@@ -49,13 +49,11 @@ extension ParsedText.Token
                 return AttributedString(text)
             
             // Hash tags
-            case .hashTag(let name, let url):
+            case .hashTag(let name, _):
                 var hashTag = AttributedString("#\(name)")
-                if let url {
-                    hashTag.link = url
-                    hashTag.foregroundColor = .pink
-                    hashTag.font = hashTag.font?.bold()
-                }
+                hashTag.link = .viewTag(name: name)
+                hashTag.foregroundColor = .pink
+                hashTag.font = hashTag.font?.bold()
                 return hashTag
                 
             // Web link
@@ -72,13 +70,11 @@ extension ParsedText.Token
                 }
                 
             // Mentions
-            case .mention(let name, let url):
+            case .mention(let name, let instance, _):
                 var mention = AttributedString("@\(name)")
-                if let url {
-                    mention.link = url
-                    mention.foregroundColor = .green
-                    mention.font = mention.font?.bold()
-                }
+                mention.link = .viewUser(name: name, instance: instance)
+                mention.foregroundColor = .green
+                mention.font = mention.font?.bold()
                 return mention
                 
             // Custom Emoji
