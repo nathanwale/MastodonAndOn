@@ -94,3 +94,17 @@ struct HomeTimelineRequest: MastodonStatusRequest
     let accessToken: AccessToken?
     let endpoint = Endpoint.homeTimeline
 }
+
+///
+/// Timeline for a hashtag
+///  - tag: Hashtag to look up
+///
+struct HashtagTimelineRequest: MastodonStatusRequest
+{
+    let host: String
+    let tag: String
+    var timeFrame: ApiQueryTimeFrame?
+    var endpoint: Endpoint {
+        .hashtagTimeline(tag: tag)
+    }
+}
