@@ -19,7 +19,7 @@ extension ParsedText
     {
         case failedToParseMentionLink(node: Node)
         case failedToParseMentionName(node: Node)
-        
+        case failedToParseMentionInstance(urlString: String)
         
         var description: String {
             switch self {
@@ -27,6 +27,8 @@ extension ParsedText
                     return message("Failed to parse link in Mention. No inner anchor found.", node: node)
                 case .failedToParseMentionName(let node):
                     return message("Failed to parse name in Mention", node: node)
+                case .failedToParseMentionInstance(let urlString):
+                    return "Failed to parse Instance from URL String: \(urlString)"
             }
         }
         
@@ -110,16 +112,29 @@ extension ParsedText
         guard let innerAnchor = node.getChildNodes().first(where: { $0.nodeName() == "a" }) else {
             throw HtmlParsingError.failedToParseMentionLink(node: node)
         }
+        
+        // Find inner span
         guard let innerSpan = innerAnchor.getChildNodes().first(where: { $0.nodeName() == "span" }) else {
             print(node.getChildNodes())
             throw HtmlParsingError.failedToParseMentionName(node: innerAnchor)
         }
         
+        // URL from HREF
         let urlString = try innerAnchor.attr("href")
-        let url = URL(string: urlString)
+        
+        // Ensure URL and host are valid
+        guard
+            let url = URL(string: urlString),
+            let instance = url.host()
+        else {
+            throw HtmlParsingError.failedToParseMentionInstance(urlString: urlString)
+        }
+        
+        // Find username
         let name = try innerSpan.getChildNodes().first!.outerHtml()
         
-        return .mention(name: name, url: url)
+        // return
+        return .mention(name: name, instance: instance, url: url)
     }
 
     /// Parse DOM nodes found in `self.html`
