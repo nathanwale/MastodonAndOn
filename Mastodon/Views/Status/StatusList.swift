@@ -160,3 +160,8 @@ struct Preview_StatusList: View
     let statuses = MastodonStatus.previews.filter { $0.id == statusId}
     return Preview_StatusList(statuses: statuses)
 }
+
+#Preview("Hashtag timeline")
+{
+    Preview_StatusList(request: HashtagTimelineRequest.sample)
+}
