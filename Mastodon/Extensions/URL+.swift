@@ -7,21 +7,33 @@
 
 import Foundation
 
+///
+/// Internal URLs
+///
 extension URL
 {
-    enum InternalQuery
+    ///
+    /// An Internal Locator for navigation
+    ///
+    enum InternalLocator
     {
+        /// View posts by tag
         case viewTag(String)
-        case viewUser(String)
+        
+        /// View user by their username
+        case viewUser(username: String, instance: String)
     }
     
-    enum InternalQueryItemName: String
+    /// Internal query names
+    private enum InternalQueryItemName: String
     {
-        case viewTag = "tag"
-        case viewUser = "user"
+        case tag = "tag"
+        case username = "username"
+        case instance = "instance"
     }
     
-    enum InternalHost: String
+    /// Internal URL hosts
+    private enum InternalHost: String
     {
         case viewTag = "view-tag"
         case viewUser = "view-user"
@@ -33,7 +45,7 @@ extension URL
     /// Return an internal URL. eg.: http://mastodonandon/view-tag?tag=cats
     /// - host: The host part of the URL. "view-tag" in the example
     /// - query: A dictionary of query terms to values. ["tag": "cats"] in the example
-    static func internalUrl(query: InternalQuery) -> Self
+    static func internalUrl(query: InternalLocator) -> Self
     {
         var components = URLComponents()
         
@@ -41,20 +53,28 @@ extension URL
         components.scheme = internalScheme
         
         let host: InternalHost
-        let queryItem: URLQueryItem
+        let queryItemDict: [InternalQueryItemName: String]
         
         // assign host and queryItem
         switch query {
             case .viewTag(let tagName):
                 host = .viewTag
-                queryItem = .init(name: InternalQueryItemName.viewTag.rawValue, value: tagName)
-            case .viewUser(let userName):
+                queryItemDict = [.tag: tagName]
+            case .viewUser(let username, let instance):
                 host = .viewUser
-                queryItem = .init(name: InternalQueryItemName.viewTag.rawValue, value: userName)
+                queryItemDict = [
+                    .username: username,
+                    .instance: instance
+                ]
         }
         
         components.host = host.rawValue
-        components.queryItems = [queryItem]
+        
+        // map queryItemDict to an array of URLQueryItem
+        components.queryItems = queryItemDict.map {
+            key, value in
+            .init(name: key.rawValue, value: value)
+        }
         
         return components.url!
     }
@@ -68,15 +88,15 @@ extension URL
     
     /// Internal URL for viewing a user profile
     /// - user: User ID
-    static func viewUser(name userName: String) -> Self
+    static func viewUser(name username: String, instance: String) -> Self
     {
-        internalUrl(query: .viewUser(userName))
+        internalUrl(query: .viewUser(username: username, instance: instance))
     }
     
     /// Parse an internal URL to return an `InternalQuery`
     /// returns `nil` if unable to parse, or URL scheme isn't internal
     /// - url: URL to pass
-    static func internalQueryForUrl(_ url: URL) -> Self.InternalQuery?
+    static func internalQueryForUrl(_ url: URL) -> Self.InternalLocator?
     {
         // Is this an internal URL?
         guard url.scheme == internalScheme else {
@@ -100,14 +120,17 @@ extension URL
         {
             // It's a view tag URL
             case InternalHost.viewTag.rawValue:
-                if let tagName = getQueryItem(.viewTag) {
+                if let tagName = getQueryItem(.tag)
+                {
                     return .viewTag(tagName)
                 }
                 
             // It's a view user URL
             case InternalHost.viewUser.rawValue:
-                if let userName = getQueryItem(.viewUser) {
-                    return .viewUser(userName)
+                if let username = getQueryItem(.username),
+                   let instance = getQueryItem(.instance)
+                {
+                    return .viewUser(username: username, instance: instance)
                 }
                 
             // We don't know what it is, return `nil`
