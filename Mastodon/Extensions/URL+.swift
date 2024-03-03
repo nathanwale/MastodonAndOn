@@ -45,7 +45,7 @@ extension URL
     /// Return an internal URL. eg.: http://mastodonandon/view-tag?tag=cats
     /// - host: The host part of the URL. "view-tag" in the example
     /// - query: A dictionary of query terms to values. ["tag": "cats"] in the example
-    static func internalUrl(query: InternalLocator) -> Self
+    static func internalUrl(locator: InternalLocator) -> Self
     {
         var components = URLComponents()
         
@@ -56,7 +56,7 @@ extension URL
         let queryItemDict: [InternalQueryItemName: String]
         
         // assign host and queryItem
-        switch query {
+        switch locator {
             case .viewTag(let tagName):
                 host = .viewTag
                 queryItemDict = [.tag: tagName]
@@ -83,20 +83,20 @@ extension URL
     /// - name: tag name for posts
     static func viewTag(name tagName: String) -> Self
     {
-        internalUrl(query: .viewTag(tagName))
+        internalUrl(locator: .viewTag(tagName))
     }
     
     /// Internal URL for viewing a user profile
     /// - user: User ID
     static func viewUser(name username: String, instance: String) -> Self
     {
-        internalUrl(query: .viewUser(username: username, instance: instance))
+        internalUrl(locator: .viewUser(username: username, instance: instance))
     }
     
     /// Parse an internal URL to return an `InternalQuery`
     /// returns `nil` if unable to parse, or URL scheme isn't internal
     /// - url: URL to pass
-    static func internalQueryForUrl(_ url: URL) -> Self.InternalLocator?
+    static func internalLocatorForUrl(_ url: URL) -> Self.InternalLocator?
     {
         // Is this an internal URL?
         guard url.scheme == internalScheme else {
