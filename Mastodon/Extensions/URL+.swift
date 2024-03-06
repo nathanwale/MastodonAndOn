@@ -22,6 +22,16 @@ extension URL
         
         /// View user by their username
         case viewUser(username: String, instance: String)
+        
+        /// Convert to Route enum
+        var route: Route {
+            switch self {
+                case .viewTag(let tag):
+                    return .postsForTag(tag: tag)
+                case .viewUser(let username, let instance):
+                    return .userProfile(username: username, instance: instance)
+            }
+        }
     }
     
     /// Internal query names
