@@ -116,7 +116,7 @@ extension StatusToolBar
     /// Show replies for this status
     func showReplies()
     {
-        navigation.push(.status(id: status.id))
+        navigation.push(.status(status))
         print("Showing \(status.repliesCount ?? 0) replies...")
     }
     
