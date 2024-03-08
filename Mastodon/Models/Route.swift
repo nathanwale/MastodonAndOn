@@ -10,7 +10,7 @@ import Foundation
 ///
 /// Represents internal navigation
 ///
-enum Route
+enum Route: Codable, Hashable
 {
     /// View posts by tag
     case postsForTag(tag: String)
