@@ -7,15 +7,15 @@
 
 import Foundation
 
+protocol AccountRequest: ApiRequest where Response == MastodonAccount {}
+
 ///
 /// Request a Mastodon Account entity for a given identifier and host
 /// - identifier: ID of Mastodon account
 /// - host: Host of the server to request account from
 ///
-struct AccountRequest: ApiRequest
+struct AccountRequestByIdentifier: AccountRequest
 {
-    typealias Response = MastodonAccount
-    
     /// Mastodon account ID
     let identifier: MastodonAccountId
     

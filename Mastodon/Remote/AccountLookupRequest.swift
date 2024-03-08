@@ -10,11 +10,8 @@ import Foundation
 ///
 /// Look up a Mastodon Account  given a username and an instance
 ///
-struct AccountLookupRequest: ApiRequest
-{
-    // Returns a MastodonAccount
-    typealias Response = MastodonAccount
-    
+struct AccountLookupRequest: AccountRequest
+{    
     /// The username to look up
     let username: String
     
