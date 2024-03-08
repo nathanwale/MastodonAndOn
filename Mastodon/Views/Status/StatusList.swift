@@ -32,35 +32,27 @@ struct StatusList: View
     /// Body
     var body: some View
     {
-        NavigationStack(path: $navigation.path)
+        List(source.statuses)
         {
-            List(source.statuses)
-            {
-                status in
-                
-                // Show status
-                StatusPost(status)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(statusInsets)
-                    // colour and event to update focused status
-                    .background(background(status: status))
-            }
-            // apply `scrollable`
-            .scrollDisabled(!scrollable)
-            // List styling
-            .listStyle(.plain)
-            .buttonStyle(.borderless)
-            // Pass on navigation object
-            .environmentObject(navigation)
-            // Configure navigation
-            .navigationDestination(for: MastodonStatus.self) {
-                status in
-                StatusDetail(status: status)
-            }
-            // Load source of Statuses
-            .task {
-                await loadStatusesIfRequired()
-            }
+            status in
+            
+            // Show status
+            StatusPost(status)
+                .listRowSeparator(.hidden)
+                .listRowInsets(statusInsets)
+                // colour and event to update focused status
+                .background(background(status: status))
+        }
+        // apply `scrollable`
+        .scrollDisabled(!scrollable)
+        // List styling
+        .listStyle(.plain)
+        .buttonStyle(.borderless)
+        // Pass on navigation object
+        .environmentObject(navigation)
+        // Load source of Statuses
+        .task {
+            await loadStatusesIfRequired()
         }
     }
     
