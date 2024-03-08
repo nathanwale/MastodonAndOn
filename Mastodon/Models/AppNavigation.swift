@@ -15,7 +15,7 @@ import SwiftUI
 final class AppNavigation: ObservableObject, Codable
 {
     /// The navigation path as a list of Statuses
-    @Published var path: NavigationPath
+    @Published var path: [Route]
     
     /// Coding keys for persistence
     enum CodingKeys: String, CodingKey
@@ -26,32 +26,26 @@ final class AppNavigation: ObservableObject, Codable
     /// Init with empty path
     init()
     {
-        path = NavigationPath()
+        path = []
     }
         
     /// Decode from persisted object
     required init(from decoder: Decoder) throws
     {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let codableRepresentation = try container.decode(NavigationPath.CodableRepresentation.self, forKey: CodingKeys.navigationPath)
-        path = NavigationPath(codableRepresentation)
+        path = try container.decode([Route].self, forKey: CodingKeys.navigationPath)
     }
     
     /// Encode into persisted object
     func encode(to encoder: Encoder) throws
     {
-        // get codable representation
-        guard let representation = path.codable else {
-            return
-        }
-        
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(representation, forKey: CodingKeys.navigationPath)
+        try container.encode(path, forKey: CodingKeys.navigationPath)
     }
     
     /// Push a new navigation item onto the Navigation Path
-    func push(_ navigationItem: any Hashable)
+    func push(_ route: Route)
     {
-        path.append(navigationItem)
+        path.append(route)
     }
 }
