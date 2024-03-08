@@ -18,6 +18,6 @@ enum Route: Codable, Hashable
     /// View user by their username
     case userProfile(username: String, instance: String)
  
-    /// View a status by ID
-    case status(id: MastodonStatus.Identifier)
+    /// View a status
+    case status(MastodonStatus)
 }
