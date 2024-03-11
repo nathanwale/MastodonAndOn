@@ -7,6 +7,64 @@
 
 import SwiftUI
 
+struct UserProfileRequestView: View 
+{
+    /// Request to fetch user
+    let userRequest: any AccountRequest
+
+    /// Account when fetched, else nil
+    @State var user: MastodonAccount?
+    
+    /// Error message if error, else nil
+    @State var error: (any Error)?
+    
+    /// Fetch user
+    func fetchUser() async
+    {
+        do {
+            user = try await userRequest.send()
+        } catch {
+            self.error = error
+            print(error.localizedDescription)
+        }
+    }
+    
+    var body: some View
+    {
+        if let user {
+            // Our user object is ready, so display the profile view
+            UserProfileView(user: user, host: userRequest.host)
+        } else if error != nil {
+            // We have an error, so display error info
+            errorInfoView
+        } else {
+            // Nothing's happened yet,
+            // so show some waiting text and begin fetching user
+            requestWaitingView
+                .task {
+                    await fetchUser()
+                }
+        }
+    }
+    
+    /// Request waiting view
+    var requestWaitingView: some View
+    {
+        Text("Fetching user info...")
+    }
+    
+    /// Error info view
+    var errorInfoView: some View
+    {
+        VStack
+        {
+            Text("Couldn't fetch user info")
+                .font(.title)
+            Text(error?.localizedDescription ?? "")
+        }
+    }
+}
+
 struct UserProfileView: View 
 {
     /// Account to display
@@ -41,27 +99,27 @@ struct UserProfileView: View
         }
     }
     
+    
     // MARK: - subviews
     // Body
     var body: some View
     {
         VStack
         {
+            // banner image doesn't scroll
             bannerImage
             
-            NavigationStack(path: $navigation.path)
+            // ... rest of the profile does
+            ScrollView
             {
-                ScrollView
+                VStack(alignment: .leading)
                 {
-                    VStack(alignment: .leading)
-                    {
-                        nameHeader
-                        Divider()
-                        profileNote
-                        statistics
-                        fields
-                        statusList
-                    }
+                    nameHeader
+                    Divider()
+                    profileNote
+                    statistics
+                    fields
+                    statusList
                 }
             }
         }
