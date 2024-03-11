@@ -14,13 +14,35 @@ import SwiftUI
 ///
 struct RootView: View
 {
-    var body: some View 
+    @EnvironmentObject var navigation: AppNavigation
+    
+    var body: some View
     {
-        RootTabView()
+        NavigationStack(path: $navigation.path)
+        {
+            RootTabView()
+        }
+        .navigationDestination(for: Route.self)
+        {
+            route in
+            let _ = print("Switching to \(route)")
+            switch route {
+                case .status(let status):
+                    StatusDetail(status: status)
+                case .userProfile(let username, let instance):
+                    let request = AccountLookupRequest(username: username, instance: instance)
+                    UserProfileRequestView(userRequest: request)
+                case .postsForTag(tag: let tag):
+                    let request = HashtagTimelineRequest(host: MastodonInstance.defaultHost, tag: tag)
+                    let source = StatusSource(statuses: [], request: request)
+                    StatusList(source: source)
+            }
+        }
     }
 }
 
 
 #Preview {
     RootView()
+        .environmentObject(AppNavigation())
 }
