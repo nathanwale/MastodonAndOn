@@ -83,12 +83,11 @@ struct RootTabView: View
     /// Logged in user's timeline
     var homeTimeline: some View
     {
-        // timeline status source
-        let source = StatusSource(
-            statuses: [],
-            request: HomeTimelineRequest.sample)
+        // timeline request
+        let request = HomeTimelineRequest.sample
         
-        return StatusList(source: source)
+        // status list with request
+        return StatusListRequestView(request: request)
     }
     
     /// Logged in user's notifications
@@ -111,11 +110,10 @@ struct RootTabView: View
     var publicTimeline: some View
     {
         // timeline status source
-        let source = StatusSource(
-            statuses: [],
-            request: PublicTimelineRequest.sample)
+        let request = PublicTimelineRequest.sample
         
-        return StatusList(source: source)
+        //
+        return StatusListRequestView(request: request)
     }
     
     /// Select view for a Tab type
