@@ -22,22 +22,41 @@ struct RootView: View
         {
             RootTabView()
         }
+        // handle navigation changes
         .navigationDestination(for: Route.self)
         {
             route in
-            let _ = print("Switching to \(route)")
-            switch route {
-                case .status(let status):
-                    StatusDetail(status: status)
-                case .userProfile(let username, let instance):
-                    let request = AccountLookupRequest(username: username, instance: instance)
-                    UserProfileRequestView(userRequest: request)
-                case .postsForTag(tag: let tag):
-                    let request = HashtagTimelineRequest(host: MastodonInstance.defaultHost, tag: tag)
-                    let source = StatusSource(statuses: [], request: request)
-                    StatusList(source: source)
-            }
+            routeWasPushed(route: route)
         }
+        // handle internal URLs
+        .onOpenURL
+        {
+            url in 
+            internalUrlWasOpened(url: url)
+        }
+    }
+    
+    /// Handle navigation changes
+    @ViewBuilder
+    func routeWasPushed(route: Route) -> some View
+    {
+        let _ = print("Switching to \(route)")
+        switch route {
+            case .status(let status):
+                StatusDetail(status: status)
+            case .userProfile(let username, let instance):
+                let request = AccountLookupRequest(username: username, instance: instance)
+                UserProfileRequestView(userRequest: request)
+            case .postsForTag(tag: let tag):
+                let request = HashtagTimelineRequest(host: MastodonInstance.defaultHost, tag: tag)
+                StatusListRequestView(request: request)
+        }
+    }
+    
+    /// Handle internel url's being opened
+    func internalUrlWasOpened(url: URL)
+    {
+        print("Root received internal URL: \(url.absoluteString)")
     }
 }
 
