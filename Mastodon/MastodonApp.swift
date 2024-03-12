@@ -11,7 +11,8 @@ import SwiftUI
 struct MastodonApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .environmentObject(AppNavigation())
         }
     }
 }
