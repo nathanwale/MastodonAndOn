@@ -21,12 +21,13 @@ struct RootView: View
         NavigationStack(path: $navigation.path)
         {
             RootTabView()
-        }
-        // handle navigation changes
-        .navigationDestination(for: Route.self)
-        {
-            route in
-            routeWasPushed(route: route)
+                // handle navigation changes
+                .navigationDestination(for: Route.self)
+                {
+                    route in
+                    routeWasPushed(route: route)
+                        .environmentObject(navigation)
+                }
         }
         // handle internal URLs
         .onOpenURL
@@ -56,7 +57,14 @@ struct RootView: View
     /// Handle internel url's being opened
     func internalUrlWasOpened(url: URL)
     {
-        print("Root received internal URL: \(url.absoluteString)")
+        // ensure url is being handled
+        guard let route = url.internalLocator?.route else {
+            print("Internal URL is not handled: \(url)")
+            return
+        }
+        
+        print("Visiting \(route)")
+        navigation.push(route)
     }
 }
 
