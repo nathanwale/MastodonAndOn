@@ -105,17 +105,16 @@ extension URL
     
     /// Parse an internal URL to return an `InternalQuery`
     /// returns `nil` if unable to parse, or URL scheme isn't internal
-    /// - url: URL to pass
-    static func internalLocatorForUrl(_ url: URL) -> Self.InternalLocator?
+    var internalLocator: Self.InternalLocator?
     {
         // Is this an internal URL?
-        guard url.scheme == internalScheme else {
+        guard scheme == Self.internalScheme else {
             return nil
         }
         
         // Can we convert into URLComponents?
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
-            print("Invalid URL: \(url.absoluteString)")
+        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: true) else {
+            print("Invalid URL: \(absoluteString)")
             return nil
         }
         
