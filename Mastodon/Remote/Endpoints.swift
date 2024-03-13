@@ -18,7 +18,7 @@ enum Endpoint
     case account(id: MastodonAccountId)
     case notifications
     case statusContext(id: MastodonStatus.Identifier)
-    case accountLookup(username: String)
+    case accountLookup
     case hashtagTimeline(tag: String)
     
     var asString: String
@@ -33,7 +33,7 @@ enum Endpoint
             case .account(let id): "/api/v1/accounts/\(id)"
             case .notifications: "/api/v1/notifications"
             case .statusContext(let id): "/api/v1/statuses/\(id)/context"
-            case .accountLookup(let username): "/api/v1/accounts/lookup?acct=\(username)"
+            case .accountLookup: "/api/v1/accounts/lookup"
             case .hashtagTimeline(let tag): "/api/v1/timelines/tag/\(tag)"
         }
     }

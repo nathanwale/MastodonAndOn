@@ -19,13 +19,16 @@ struct AccountLookupRequest: AccountRequest
     let instance: String
     
     /// Endpoint for API request
-    var endpoint: Endpoint {
-        .accountLookup(username: username)
-    }
+    var endpoint: Endpoint = .accountLookup
     
     // Host and instance are the same here
     var host: String {
         instance
+    }
+    
+    /// Username is sent in the query string
+    var queryItems: [URLQueryItem] {
+        [.init(name: "acct", value: username)]
     }
     
     /// Init with username and instance
