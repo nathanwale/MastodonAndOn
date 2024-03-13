@@ -21,7 +21,8 @@ enum Endpoint
     case accountLookup
     case hashtagTimeline(tag: String)
     
-    var asString: String
+    /// Endpoint as path
+    var asPath: String
     {
         switch self {
             case .none: ""

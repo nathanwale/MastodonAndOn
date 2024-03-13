@@ -90,7 +90,7 @@ extension ApiRequest
         
         components.scheme = "https"
         components.host = host
-        components.path = endpoint.asString
+        components.path = endpoint.asPath
         if !queryItems.isEmpty {
             components.queryItems = queryItems
         }
@@ -98,7 +98,7 @@ extension ApiRequest
         // assign url components to request
         print("Fetching \(components.url?.absoluteString ?? "<URL is nil!>")")
         
-        if let first = endpoint.asString.first,
+        if let first = endpoint.asPath.first,
            first != "/" 
         {
             print("Endpoint needs to begin with '/'.", endpoint)
