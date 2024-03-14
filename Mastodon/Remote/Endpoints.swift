@@ -20,11 +20,16 @@ enum Endpoint
     case statusContext(id: MastodonStatus.Identifier)
     case accountLookup
     case hashtagTimeline(tag: String)
+    case favouriteStatus(id: MastodonStatus.Identifier)
+    case unfavouriteStatus(id: MastodonStatus.Identifier)
+    case boostStatus(id: MastodonStatus.Identifier)
+    case unboostStatus(id: MastodonStatus.Identifier)
     
     /// Endpoint as path
     var asPath: String
     {
-        switch self {
+        switch self 
+        {
             case .none: ""
             case .instance: "/api/v2/instance"
             case .publicTimeline: "/api/v1/timelines/public"
@@ -36,6 +41,10 @@ enum Endpoint
             case .statusContext(let id): "/api/v1/statuses/\(id)/context"
             case .accountLookup: "/api/v1/accounts/lookup"
             case .hashtagTimeline(let tag): "/api/v1/timelines/tag/\(tag)"
+            case .favouriteStatus(id: let id): "/api/v1/statuses/\(id)/favourite"
+            case .unfavouriteStatus(id: let id): "/api/v1/statuses/\(id)/unfavourite"
+            case .boostStatus(id: let id): "/api/v1/statuses/\(id)/reblog"
+            case .unboostStatus(id: let id): "/api/v1/statuses/\(id)/unreblog"
         }
     }
 }
