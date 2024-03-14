@@ -75,8 +75,9 @@ struct StatusPost: View
                 postContent
             }
             
-            // Toolbar
-            StatusToolBar(status: status)
+            // Toolbar, should pass in `post`, because the actions on
+            // the toolbar will apply to the reblogged content if it exists
+            StatusToolBar(status: post)
         }
         .padding(0)
     }
