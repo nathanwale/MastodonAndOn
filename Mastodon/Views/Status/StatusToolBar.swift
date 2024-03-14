@@ -31,6 +31,45 @@ struct StatusToolBar: View
     /// Navigation object
     @EnvironmentObject private var navigation: AppNavigation
     
+    /// Has status been reblogged?
+    @State var wasReblogged = false
+    
+    /// Has status been favourited?
+    @State var wasFaved = false
+    
+    /// Reblog count
+    @State var reblogCount = 0
+    
+    /// Fave count
+    @State var faveCount = 0
+    
+    /// Init with Status and optional style
+    init(status: MastodonStatus, style: Style = .prominent)
+    {
+        self.status = status
+        self.style = style
+        _wasFaved = .init(initialValue: status.favourited ?? false)
+        _wasReblogged = .init(initialValue: status.reblogged ?? false)
+        _reblogCount = .init(initialValue: status.reblogsCount)
+        _faveCount = .init(initialValue: status.favouritesCount)
+    }
+    
+    /// Reblogged icon
+    var rebloggedIcon: Icon
+    {
+        wasReblogged
+            ? .reblogFilled
+            : .reblog
+    }
+    
+    /// Faved icon
+    var favedIcon: Icon
+    {
+        wasFaved
+            ? .favouriteFilled
+            : .favourite
+    }
+    
     /// Background style
     var background: some View
     {
@@ -47,8 +86,8 @@ struct StatusToolBar: View
         // Actions that have status counts associated with them
         let actionsWithCounts = [
             ("Show replies", Icon.replies, showReplies, status.repliesCount),
-            ("Reblog", Icon.reblog, reblogStatus, status.reblogsCount),
-            ("Favourite", Icon.favourite, favouriteStatus, status.favouritesCount),
+            ("Reblog", rebloggedIcon, reblogStatus, status.reblogsCount),
+            ("Favourite", favedIcon, favouriteStatus, status.favouritesCount),
         ]
         
         // Button stack
@@ -94,12 +133,16 @@ struct StatusToolBar: View
         let count: Int
         
         /// Action called on button tap
-        let action: () -> Void
+        let action: () async -> Void
         
         /// Body view
         var body: some View
         {
-            Button(label, systemImage: icon.rawValue, action: action)
+            Button(label, systemImage: icon.rawValue) {
+                Task {
+                    await action()
+                }
+            }
             Text(count.description)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -114,32 +157,62 @@ struct StatusToolBar: View
 extension StatusToolBar
 {
     /// Show replies for this status
-    func showReplies()
+    func showReplies() async
     {
         navigation.push(.status(status))
         print("Showing \(status.repliesCount ?? 0) replies...")
     }
     
     /// Reply to this status
-    func replyToStatus() -> Void
+    func replyToStatus()
     {
         print("Replying to status...")
     }
     
     /// Reblog this status
-    func reblogStatus() -> Void
+    func reblogStatus() async
     {
-        print("Reblogging status...")
+        print("Reblogged status is now \(status.reblogged?.description ?? "Unset")")
+        
+        // Request to boost or undo boost
+        let request = BoostStatusRequest(
+            host: MastodonInstance.defaultHost,
+            statusId: status.id,
+            undo: wasReblogged,
+            accessToken: Secrets.previewAccessToken)
+        
+        do {
+            let returnedStatus = try await request.send()
+            wasReblogged = (returnedStatus.reblogged == true)
+            reblogCount = returnedStatus.reblogsCount
+        } catch {
+            print(error)
+        }
     }
     
     /// Favourite this status
-    func favouriteStatus() -> Void
+    func favouriteStatus() async
     {
-        print("Favouriting status...")
+        print("Favourited status is now \(status.favourited?.description ?? "Unset")")
+        
+        // Request to boost or undo boost
+        let request = FavouriteStatusRequest(
+            host: MastodonInstance.defaultHost,
+            statusId: status.id,
+            undo: wasFaved,
+            accessToken: Secrets.previewAccessToken)
+        
+        do {
+            let returnedStatus = try await request.send()
+            wasFaved = (returnedStatus.favourited == true)
+            faveCount = returnedStatus.favouritesCount
+        } catch {
+            print(error)
+        }
     }
     
     /// Share this status
-    func shareStatus() -> Void
+    func shareStatus()
     {
         print("Sharing status...")
     }
