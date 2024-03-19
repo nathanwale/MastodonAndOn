@@ -16,6 +16,9 @@ struct RootView: View
 {
     @EnvironmentObject var navigation: AppNavigation
     
+    @State var showingComposeSheet = false
+    @State var newPostText = ""
+    
     var body: some View
     {
         NavigationStack(path: $navigation.path)
@@ -27,6 +30,19 @@ struct RootView: View
                     route in
                     routeWasPushed(route: route)
                         .environmentObject(navigation)
+                }
+                // toolbar
+                .toolbar {
+                    // compose post button
+                    Button {
+                        showingComposeSheet.toggle()
+                    } label: {
+                        Image(systemName: Icon.compose.rawValue)
+                    }
+                }
+                // compose sheet
+                .sheet(isPresented: $showingComposeSheet) {
+                    TextField("New post", text: $newPostText)
                 }
         }
         // handle internal URLs
