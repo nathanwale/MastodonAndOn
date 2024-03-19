@@ -4,5 +4,6 @@
         <page name='ParsedContent'/>
         <page name='CustomEmoji'/>
         <page name='Obfuscation'/>
+        <page name='StatusCharacterCount'/>
     </pages>
 </playground>
