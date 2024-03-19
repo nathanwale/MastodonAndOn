@@ -43,6 +43,8 @@ enum Icon: String, CaseIterable
     case reset = "backward.end"
     case contentWarning = "exclamationmark.bubble.circle"
     case audio = "speaker.wave.3"
+    case compose = "square.and.pencil"
+    case send = "paperplane"
 }
 
 // Icon extensions
