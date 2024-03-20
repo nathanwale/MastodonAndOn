@@ -12,6 +12,12 @@ struct StatusComposer: View
     /// Content of post
     @State var content = ""
     
+    /// Add a content warning?
+    @State var hasContentWarning = false
+    
+    /// Content Warning Message
+    @State var contentWarningMessage = ""
+    
     /// Character count
     @State var remainingCharacters = StatusCharacterCounter.maxCharacters
     
@@ -43,7 +49,10 @@ struct StatusComposer: View
     {
         VStack
         {
-            headerText
+            header
+            if hasContentWarning {
+                contentWarningTextField
+            }
             contentTextField
             postButton
         }
@@ -51,10 +60,14 @@ struct StatusComposer: View
     }
     
     /// Header text
-    var headerText: some View
+    var header: some View
     {
-        Text("New post")
-            .font(.headline)
+        HStack
+        {
+            Text("New post").font(.headline)
+            Spacer()
+            contentWarningSwitch
+        }
     }
     
     /// Text field for post content
@@ -85,6 +98,33 @@ struct StatusComposer: View
             .disabled(remainingCharacters < 0)
         }
         .buttonStyle(.borderedProminent)
+    }
+    
+    /// Content Warning Switch
+    var contentWarningSwitch: some View
+    {
+        Toggle(isOn: $hasContentWarning)
+        {
+            Text("Add Warning")
+        }
+        .toggleStyle(.button)
+    }
+    
+    /// Content warning text field
+    var contentWarningTextField: some View
+    {
+        VStack(alignment: .leading)
+        {
+            HStack
+            {
+                Icon.contentWarning.image.font(.title)
+                Text("Your content will be obscured, and show this warning.")
+            }
+            TextField("Content warning", text: $contentWarningMessage)
+                .textFieldStyle(.roundedBorder)
+        }
+        .padding()
+        .background(.primary.opacity(0.1))
     }
 }
 
