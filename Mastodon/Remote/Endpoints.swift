@@ -24,6 +24,8 @@ enum Endpoint
     case unfavouriteStatus(id: MastodonStatus.Identifier)
     case boostStatus(id: MastodonStatus.Identifier)
     case unboostStatus(id: MastodonStatus.Identifier)
+    case hashtagLookup
+    case mentionLookup
     
     /// Endpoint as path
     var asPath: String
@@ -45,6 +47,8 @@ enum Endpoint
             case .unfavouriteStatus(id: let id): "/api/v1/statuses/\(id)/unfavourite"
             case .boostStatus(id: let id): "/api/v1/statuses/\(id)/reblog"
             case .unboostStatus(id: let id): "/api/v1/statuses/\(id)/unreblog"
+            case .hashtagLookup: "/api/v2/search"
+            case .mentionLookup: "/api/v1/accounts/search"
         }
     }
 }
