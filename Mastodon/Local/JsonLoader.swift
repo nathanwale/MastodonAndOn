@@ -19,6 +19,12 @@ struct JsonLoader
         return decoder
     }
     
+    static var encoder: JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        return encoder
+    }
+    
     ///
     /// Load JSON from local URL
     /// - url: URL pointing to local file
