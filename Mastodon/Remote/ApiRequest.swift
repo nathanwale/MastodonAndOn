@@ -48,6 +48,9 @@ protocol ApiRequest
     
     /// optional Access Token granted by OAuth authentication
     var accessToken: AccessToken? { get }
+    
+    /// requires an idempotency key in the HTTP header
+    var requiresIdempotencyKey: Bool { get }
 }
 
 
@@ -75,6 +78,7 @@ extension ApiRequest
     var postData: Data? { nil }
     var accessToken: AccessToken? { nil }
     var method: HttpMethod { .get }
+    var requiresIdempotencyKey: Bool { false }
 }
 
 
@@ -122,6 +126,13 @@ extension ApiRequest
             request.setValue( "Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         } else {
             print("No access token")
+        }
+        
+        // add idempotency key if required
+        if requiresIdempotencyKey {
+            let idempotencyKey = UUID().uuidString
+            print("With idempotency key: \(idempotencyKey)")
+            request.setValue(idempotencyKey, forHTTPHeaderField: "Idempotency-Key")
         }
         
         return request
