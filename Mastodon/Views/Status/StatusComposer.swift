@@ -12,6 +12,12 @@ import SwiftUI
 ///
 struct StatusComposer: View
 {
+    /// Dismiss this view
+    @Environment(\.dismiss) var dismiss
+    
+    /// Reply to ID if applicable, else nil
+    var replyStatusId: MastodonStatus.Identifier?
+    
     /// Content of post
     @State var content = ""
     
@@ -29,6 +35,9 @@ struct StatusComposer: View
     
     /// Lookup results
     @State var lookupResults: [LookupResult] = []
+    
+    /// Posting error if exists
+    @State var postingError: Error?
     
     /// Character counter
     let counter = StatusCharacterCounter()
@@ -159,6 +168,20 @@ struct StatusComposer: View
         content.replaceSubrange(index..., with: "\(symbol)\(replacement)")
     }
     
+    /// Post status
+    func postStatus() async throws
+    {
+        let request = NewStatusRequest(
+            host: MastodonInstance.defaultHost,
+            accessToken: Secrets.previewAccessToken,
+            statusContent: content,
+            replyStatusId: replyStatusId,
+            isSensitive: hasContentWarning,
+            spoilerText: contentWarningMessage)
+        
+        _ = try await request.send()
+    }
+    
     // MARK: - subviews
     var body: some View
     {
@@ -170,6 +193,9 @@ struct StatusComposer: View
                 contentWarningTextField
             }
             contentTextField
+            if postingError != nil {
+                postingErrorMessage
+            }
             postButton
             lookupMenu
         }
@@ -218,8 +244,16 @@ struct StatusComposer: View
             Spacer()
             Button("Post!", systemImage: Icon.send.rawValue)
             {
-                print("Posting:")
-                print(content)
+                Task
+                {
+                    do {
+                        try await postStatus()
+                        dismiss()
+                    } catch {
+                        print(error)
+                        postingError = error
+                    }
+                }
             }
             .disabled(remainingCharacters < 0)
         }
@@ -324,6 +358,27 @@ struct StatusComposer: View
         .onTapGesture {
             replaceLast(symbol: "#", replacement: tag)
         }
+    }
+    
+    /// Posting error message
+    var postingErrorMessage: some View
+    {
+        HStack(alignment: .top)
+        {
+            //
+            Icon.error.image
+                .font(.title)
+                .padding(.top, 5)
+            
+            // Messages
+            VStack(alignment: .leading)
+            {
+                Text("There was an error posting").font(.headline)
+                Text(postingError?.localizedDescription ?? "")
+            }
+        }
+        .padding()
+        .background(Color.yellow.opacity(0.5))
     }
 }
 
