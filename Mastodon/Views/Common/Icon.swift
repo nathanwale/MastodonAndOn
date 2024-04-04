@@ -45,6 +45,7 @@ enum Icon: String, CaseIterable
     case audio = "speaker.wave.3"
     case compose = "square.and.pencil"
     case send = "paperplane"
+    case error = "exclamationmark.triangle"
 }
 
 // Icon extensions
