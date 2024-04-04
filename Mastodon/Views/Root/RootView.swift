@@ -42,7 +42,7 @@ struct RootView: View
                 }
                 // compose sheet
                 .sheet(isPresented: $showingComposeSheet) {
-                    TextField("New post", text: $newPostText)
+                    StatusComposer()
                 }
         }
         // handle internal URLs
