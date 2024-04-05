@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SelectInstanceView: View 
 {
-    @State var host = MastodonInstance.defaultHost
+    @State var host = Config.shared.activeInstanceHost
     @State var isEditingHost = false
     @State var connectionState = ConnectionState.untried
     @State var connectedInstance: MastodonInstance? = nil

@@ -12,6 +12,13 @@ import SwiftUI
 ///
 struct RootTabView: View
 {
+    /// Instance host
+    let instanceHost = Config.shared.activeInstanceHost
+    
+    /// Access token
+    let accessToken = Config.shared.accessToken
+    
+    /// Selected tab, home timeline by default
     @State var selectedTab = Tab.homeTimeline
     
     /// Represents each tab
@@ -94,16 +101,16 @@ struct RootTabView: View
     var notificationsView: some View
     {
         NotificationListView(
-            accessToken: Secrets.previewAccessToken,
-            host: MastodonInstance.defaultHost
+            accessToken: accessToken,
+            host: instanceHost
         )
-            .padding()
+        .padding()
     }
     
     /// Logged in user's profile
     var userProfile: some View
     {
-        UserProfileView(user: .sample, host: MastodonInstance.defaultHost)
+        UserProfileView(user: .sample, host: instanceHost)
     }
     
     /// Public timeline

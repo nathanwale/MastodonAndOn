@@ -24,7 +24,7 @@ struct StatusDetail: View
     @Namespace var currentStatusId
     
     /// Instance host
-    let host = MastodonInstance.defaultHost
+    let host = Config.shared.activeInstanceHost
     
     /// Ancestors: Statuses this Status in reply to
     var ancestors: [MastodonStatus]

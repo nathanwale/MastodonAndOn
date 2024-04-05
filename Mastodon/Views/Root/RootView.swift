@@ -14,11 +14,19 @@ import SwiftUI
 ///
 struct RootView: View
 {
+    /// Instance host
+    let instanceHost = Config.shared.activeInstanceHost
+    
+    /// App navigation
     @EnvironmentObject var navigation: AppNavigation
     
+    /// Are we showing compose sheet?
     @State var showingComposeSheet = false
+    
+    /// Text of new post
     @State var newPostText = ""
     
+    /// Main view
     var body: some View
     {
         NavigationStack(path: $navigation.path)
@@ -65,7 +73,7 @@ struct RootView: View
                 let request = AccountLookupRequest(username: username, instance: instance)
                 UserProfileRequestView(userRequest: request)
             case .postsForTag(tag: let tag):
-                let request = HashtagTimelineRequest(host: MastodonInstance.defaultHost, tag: tag)
+                let request = HashtagTimelineRequest(host: instanceHost, tag: tag)
                 StatusListRequestView(request: request)
         }
     }

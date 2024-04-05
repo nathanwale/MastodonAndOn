@@ -12,7 +12,9 @@ import SwiftUI
 ///
 struct StatusToolBar: View
 {
+    /// 
     /// Style of the toolbar
+    ///
     enum Style
     {
         /// Prominent style: coloured background
@@ -21,6 +23,12 @@ struct StatusToolBar: View
         /// Subdued style: translucent background
         case subdued
     }
+    
+    /// Instance host
+    let instanceHost = Config.shared.activeInstanceHost
+    
+    /// Access token
+    let accessToken = Config.shared.accessToken
     
     /// The status this toolbar belongs to
     let status: MastodonStatus
@@ -176,10 +184,10 @@ extension StatusToolBar
         
         // Request to boost or undo boost
         let request = BoostStatusRequest(
-            host: MastodonInstance.defaultHost,
+            host: instanceHost,
             statusId: status.id,
             undo: wasReblogged,
-            accessToken: Secrets.previewAccessToken)
+            accessToken: accessToken)
         
         do {
             let returnedStatus = try await request.send()
@@ -197,10 +205,10 @@ extension StatusToolBar
         
         // Request to boost or undo boost
         let request = FavouriteStatusRequest(
-            host: MastodonInstance.defaultHost,
+            host: instanceHost,
             statusId: status.id,
             undo: wasFaved,
-            accessToken: Secrets.previewAccessToken)
+            accessToken: accessToken)
         
         do {
             let returnedStatus = try await request.send()

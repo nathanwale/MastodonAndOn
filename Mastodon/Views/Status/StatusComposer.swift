@@ -12,7 +12,13 @@ import SwiftUI
 ///
 struct StatusComposer: View
 {
-    /// Dismiss this view
+    /// Instance host
+    let instanceHost = Config.shared.activeInstanceHost
+    
+    /// Access token
+    let accessToken = Config.shared.accessToken
+    
+    /// Function to dismiss this view
     @Environment(\.dismiss) var dismiss
     
     /// Reply to ID if applicable, else nil
@@ -118,15 +124,18 @@ struct StatusComposer: View
             case .hashtag(let tagFragment):
                 if let tagFragment {
                     request = HashtagLookupRequest(
-                        host: MastodonInstance.defaultHost,
+                        host: instanceHost,
                         searchTerm: tagFragment,
-                        accessToken: Secrets.previewAccessToken)
+                        accessToken: accessToken)
                 }
                 
             // look up mention if it's at least two characters
             case .mention(let mentionFragment):
                 if let mentionFragment {
-                    request = MentionLookupRequest(host: MastodonInstance.defaultHost, searchTerm: mentionFragment, accessToken: Secrets.previewAccessToken)
+                    request = MentionLookupRequest(
+                        host: instanceHost,
+                        searchTerm: mentionFragment,
+                        accessToken: accessToken)
                 }
         }
         
@@ -172,8 +181,8 @@ struct StatusComposer: View
     func postStatus() async throws
     {
         let request = NewStatusRequest(
-            host: MastodonInstance.defaultHost,
-            accessToken: Secrets.previewAccessToken,
+            host: instanceHost,
+            accessToken: accessToken,
             statusContent: content,
             replyStatusId: replyStatusId,
             isSensitive: hasContentWarning,
