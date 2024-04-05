@@ -9,7 +9,7 @@ import SwiftUI
 
 protocol ConfigProvider
 {
-    var activeInstance: String { get set }
+    var activeInstanceHost: String { get set }
     var accessToken: AccessToken { get }
 }
 
@@ -43,7 +43,7 @@ struct Config: ConfigProvider
     
     /// Active Instance: the instance the user is logged in to
     @AppStorage(Keys.activeInstance.rawValue)
-    var activeInstance: String = MastodonInstance.defaultHost
+    var activeInstanceHost: String = MastodonInstance.defaultHost
     
     /// Access token, used for authenticated operations
     var accessToken: AccessToken
@@ -65,7 +65,7 @@ struct Config: ConfigProvider
 struct PreviewConfig: ConfigProvider
 {
     // Use default instance
-    var activeInstance = MastodonInstance.defaultHost
+    var activeInstanceHost = MastodonInstance.defaultHost
     
     // Use token stored in secrets
     var accessToken = Secrets.previewAccessToken
