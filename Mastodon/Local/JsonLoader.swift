@@ -12,6 +12,10 @@ import Foundation
  */
 struct JsonLoader
 {
+    /// Local documents directory
+    static let documentDirectoryUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    
+    /// Default decoder
     static var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -19,6 +23,7 @@ struct JsonLoader
         return decoder
     }
     
+    /// Default encoder
     static var encoder: JSONEncoder {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
@@ -80,5 +85,36 @@ struct JsonLoader
         } catch {
             fatalError("Couldn't parse: \(error)")
         }
+    }
+    
+    ///
+    /// URL for document with name
+    ///
+    static func documentUrl(name: String) -> URL
+    {
+        documentDirectoryUrl.appendingPathComponent("\(name).json")
+    }
+    
+    ///
+    /// Encode to document directory
+    ///
+    static func toDocuments(_ encodable: any Encodable, name: String)
+    {
+        do {
+            let url = documentUrl(name: name)
+            let data = try encoder.encode(encodable)
+            try data.write(to: url)
+        } catch {
+            fatalError("Couldn't save object to documents: \(error.localizedDescription)")
+        }
+    }
+    
+    ///
+    /// Deccode from document directory
+    ///
+    static func fromDocuments<T: Decodable>(name: String) -> T
+    {
+        let url = documentUrl(name: name)
+        return fromLocalUrl(url)
     }
 }
