@@ -21,6 +21,9 @@ enum Route: Codable, Hashable
     /// View a status
     case viewStatus(MastodonStatus)
     
+    /// Edit status
+    case editStatus(MastodonStatus)
+    
     /// Reply to a status
     case replyToStatus(MastodonStatus)
 }
