@@ -22,7 +22,7 @@ struct StatusComposer: View
     @Environment(\.dismiss) var dismiss
     
     /// Reply to ID if applicable, else nil
-    var replyStatusId: MastodonStatus.Identifier?
+    var replyStatus: MastodonStatus?
     
     /// Content of post
     @State var content = ""
@@ -184,37 +184,41 @@ struct StatusComposer: View
             host: instanceHost,
             accessToken: accessToken,
             statusContent: content,
-            replyStatusId: replyStatusId,
+            replyStatusId: replyStatus?.id,
             isSensitive: hasContentWarning,
             spoilerText: contentWarningMessage)
         
         _ = try await request.send()
     }
     
+    
     // MARK: - subviews
     var body: some View
     {
-        VStack
+        ScrollView
         {
-
-            header
-            if hasContentWarning {
-                contentWarningTextField
+            VStack
+            {
+                header
+                if hasContentWarning {
+                    contentWarningTextField
+                }
+                contentTextField
+                if postingError != nil {
+                    postingErrorMessage
+                }
+                postButton
+                lookupMenu
+                replyingToStatusView
             }
-            contentTextField
-            if postingError != nil {
-                postingErrorMessage
-            }
-            postButton
-            lookupMenu
-        }
-        .padding()
-        .onChange(of: lookupState) {
-            Task {
-                do {
-                    try await lookup()
-                } catch {
-                    print("Lookup error: \(error)")
+            .padding()
+            .onChange(of: lookupState) {
+                Task {
+                    do {
+                        try await lookup()
+                    } catch {
+                        print("Lookup error: \(error)")
+                    }
                 }
             }
         }
@@ -225,7 +229,9 @@ struct StatusComposer: View
     {
         HStack
         {
-            Text("New post").font(.headline)
+            if replyStatus == nil {
+                Text("New post").font(.headline)
+            }
             Spacer()
             contentWarningSwitch
         }
@@ -389,6 +395,21 @@ struct StatusComposer: View
         .padding()
         .background(Color.yellow.opacity(0.5))
     }
+    
+    /// Replying to Status view
+    @ViewBuilder
+    var replyingToStatusView: some View
+    {
+        if let replyStatus {
+            VStack(alignment: .leading)
+            {
+                Text("Replying to:").font(.headline)
+                StatusPost(replyStatus, showToolBar: false)
+                    .padding(.vertical, 10)
+                    .background(Color.primary.opacity(0.1))
+            }
+        }
+    }
 }
 
 
@@ -424,6 +445,12 @@ extension StatusComposer
 }
 
 // MARK: - previews
-#Preview {
+#Preview("New status") 
+{
     StatusComposer()
+}
+
+#Preview("Replying")
+{
+    StatusComposer(replyStatus: .preview)
 }
