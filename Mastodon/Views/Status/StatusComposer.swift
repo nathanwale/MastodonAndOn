@@ -21,8 +21,8 @@ struct StatusComposer: View
     /// Function to dismiss this view
     @Environment(\.dismiss) var dismiss
     
-    /// Reply to ID if applicable, else nil
-    var replyStatus: MastodonStatus?
+    /// Editing context
+    private var context: Context = .new
     
     /// Content of post
     @State var content = ""
@@ -48,6 +48,25 @@ struct StatusComposer: View
     /// Character counter
     let counter = StatusCharacterCounter()
     
+    // MARK: - inits
+    /// Init with new Status
+    init() {}
+    
+    /// Init replying to Status
+    init(replyingTo: MastodonStatus)
+    {
+        context = .replying(replyingTo)
+    }
+    
+    /// Init editing Status
+    init(editing: MastodonStatus)
+    {
+        context = .editing(editing)
+        _content = .init(initialValue: editing.content)
+    }
+    
+    
+    // MARK: - funcs
     /// Remaining characters message
     var remainingCharactersMessage: String
     {
@@ -180,11 +199,18 @@ struct StatusComposer: View
     /// Post status
     func postStatus() async throws
     {
+        let replyToId: MastodonStatus.Identifier? = switch context {
+            case .new, .editing:
+                nil
+            case .replying(let status):
+                status.id
+        }
+        
         let request = NewStatusRequest(
             host: instanceHost,
             accessToken: accessToken,
             statusContent: content,
-            replyStatusId: replyStatus?.id,
+            replyStatusId: replyToId,
             isSensitive: hasContentWarning,
             spoilerText: contentWarningMessage)
         
@@ -229,9 +255,16 @@ struct StatusComposer: View
     {
         HStack
         {
-            if replyStatus == nil {
-                Text("New post").font(.headline)
+            let description = switch context {
+                case .new:
+                    "New post"
+                case .editing:
+                    "Editing your post"
+                case .replying(let status):
+                    "Replying to \(status.account.displayName ?? "post")"
             }
+            
+            Text(description).font(.headline)
             Spacer()
             contentWarningSwitch
         }
@@ -400,14 +433,19 @@ struct StatusComposer: View
     @ViewBuilder
     var replyingToStatusView: some View
     {
-        if let replyStatus {
-            VStack(alignment: .leading)
-            {
-                Text("Replying to:").font(.headline)
-                StatusPost(replyStatus, showToolBar: false)
-                    .padding(.vertical, 10)
-                    .background(Color.primary.opacity(0.1))
-            }
+        switch context
+        {
+            case .replying(let status):
+                VStack(alignment: .leading)
+                {
+                    Text("Replying to:").font(.headline)
+                    StatusPost(status, showToolBar: false)
+                        .padding(.vertical, 10)
+                        .background(Color.primary.opacity(0.1))
+                }
+                
+            default:
+                EmptyView()
         }
     }
 }
@@ -442,6 +480,21 @@ extension StatusComposer
             }
         }
     }
+    
+    ///
+    /// What type of Status are we editing
+    ///
+    enum Context
+    {
+        /// A new Status
+        case new
+        
+        /// Replying to a Status
+        case replying(MastodonStatus)
+        
+        /// Editing a Status
+        case editing(MastodonStatus)
+    }
 }
 
 // MARK: - previews
@@ -452,5 +505,10 @@ extension StatusComposer
 
 #Preview("Replying")
 {
-    StatusComposer(replyStatus: .preview)
+    StatusComposer(replyingTo: .preview)
+}
+
+#Preview("Editing")
+{
+    StatusComposer(editing: .preview)
 }
