@@ -20,4 +20,7 @@ enum Route: Codable, Hashable
  
     /// View a status
     case viewStatus(MastodonStatus)
+    
+    /// Reply to a status
+    case replyToStatus(MastodonStatus)
 }
