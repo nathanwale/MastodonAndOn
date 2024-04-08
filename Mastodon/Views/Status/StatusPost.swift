@@ -39,9 +39,27 @@ struct StatusPost: View
     /// User has chosen to reveal sensitive content
     @State var hasRevealedSensitiveContent = false
     
+    /// Navigation object
+    @EnvironmentObject private var navigation: AppNavigation
+    
     /// Content should be hidden if it's marked `sensitive=true` and user hasn't chosen to reveal it
     var shouldHideContent: Bool {
         post.sensitive && !hasRevealedSensitiveContent
+    }
+    
+    /// Can the user edit this post?
+    var isEditable: Bool 
+    {
+        // If active ID or post ID are nil, we can't edit
+        guard
+            let activeId = Config.shared.activeAccount?.id,
+            let postId = post.account.id
+        else {
+            return false
+        }
+        
+        // Does this post belong to the active user?
+        return activeId == postId
     }
     
     
@@ -52,6 +70,15 @@ struct StatusPost: View
         self.showToolBar = showToolBar
     }
     
+    /// Edit reply
+    func editReply()
+    {
+        print("Editing Status #\(post.id ?? "?")")
+        navigation.push(.editStatus(post))
+    }
+    
+    
+    // MARK: - subviews
     // Body
     var body: some View
     {
@@ -164,10 +191,19 @@ struct StatusPost: View
             profileImage
             VStack(alignment: .leading)
             {
-                // Display name
-                CustomEmojiText(account.displayName, emojis: emojis)
-                    .font(.headline)
-                    .lineLimit(1)
+                HStack
+                {
+                    // Display name
+                    CustomEmojiText(account.displayName, emojis: emojis)
+                        .font(.headline)
+                        .lineLimit(1)
+                    
+                    // Show edit button if editable
+                    if isEditable {
+                        Spacer()
+                        editButton
+                    }
+                }
                 HStack
                 {
                     // Webfinger account uri: eg. "@username@instance.org"
@@ -202,6 +238,13 @@ struct StatusPost: View
             }
             .foregroundColor(.secondary)
         }
+    }
+    
+    /// Edit button
+    var editButton: some View
+    {
+        Button("Edit", systemImage: Icon.compose.rawValue, action: editReply)
+            .labelStyle(.titleAndIcon)
     }
 }
 
