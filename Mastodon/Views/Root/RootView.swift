@@ -71,12 +71,20 @@ struct RootView: View
             // show status
             case .viewStatus(let status):
                 StatusDetail(status: status)
+                
+            // show user profile
             case .userProfile(let username, let instance):
                 let request = AccountLookupRequest(username: username, instance: instance)
                 UserProfileRequestView(userRequest: request)
+                
+            // show posts for tag
             case .postsForTag(tag: let tag):
                 let request = HashtagTimelineRequest(host: instanceHost, tag: tag)
                 StatusListRequestView(request: request)
+                
+            // reply to status
+            case .replyToStatus(let status):
+                StatusComposer(replyStatus: status)
         }
     }
     
