@@ -75,6 +75,10 @@ struct RootView: View
             case .viewStatus(let status):
                 StatusDetail(status: status)
                 
+            // edit status
+            case .editStatus(let status):
+                StatusComposer(editing: status)
+                
             // show user profile
             case .userProfile(let username, let instance):
                 let request = AccountLookupRequest(username: username, instance: instance)
@@ -87,7 +91,7 @@ struct RootView: View
                 
             // reply to status
             case .replyToStatus(let status):
-                StatusComposer(replyStatus: status)
+                StatusComposer(replyingTo: status)
         }
     }
     
