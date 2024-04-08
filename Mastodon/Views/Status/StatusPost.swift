@@ -13,10 +13,11 @@ import SwiftUI
 ///
 struct StatusPost: View
 {
-
-    
     /// The Status for this view
     var status: MastodonStatus
+    
+    /// Show toolbar if true
+    var showToolBar = true
     
     /// Post to be displayed.
     /// Reblogged Status if it exists, else the original Status
@@ -45,9 +46,10 @@ struct StatusPost: View
     
     
     // Init
-    init(_ status: MastodonStatus)
+    init(_ status: MastodonStatus, showToolBar: Bool = true)
     {
         self.status = status
+        self.showToolBar = showToolBar
     }
     
     // Body
@@ -77,7 +79,9 @@ struct StatusPost: View
             
             // Toolbar, should pass in `post`, because the actions on
             // the toolbar will apply to the reblogged content if it exists
-            StatusToolBar(status: post)
+            if showToolBar {
+                StatusToolBar(status: post)
+            }
         }
         .padding(0)
     }
