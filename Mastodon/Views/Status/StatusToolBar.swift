@@ -174,7 +174,8 @@ extension StatusToolBar
     /// Reply to this status
     func replyToStatus()
     {
-        print("Replying to status...")
+        navigation.push(.replyToStatus(status))
+        print("Replying to status #\(status.id ?? "none")")
     }
     
     /// Reblog this status
