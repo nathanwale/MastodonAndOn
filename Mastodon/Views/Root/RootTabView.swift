@@ -18,6 +18,9 @@ struct RootTabView: View
     /// Access token
     let accessToken = Config.shared.accessToken
     
+    /// Active user
+    let activeAccount: MastodonAccount
+    
     /// Selected tab, home timeline by default
     @State var selectedTab = Tab.homeTimeline
     
@@ -110,7 +113,7 @@ struct RootTabView: View
     /// Logged in user's profile
     var userProfile: some View
     {
-        UserProfileView(user: .sample, host: instanceHost)
+        UserProfileView(user: activeAccount, host: instanceHost)
     }
     
     /// Public timeline
@@ -143,6 +146,6 @@ struct RootTabView: View
 
 // MARK: - previews
 #Preview {
-    RootTabView()
+    RootTabView(activeAccount: Config.shared.activeAccount!)
         .environmentObject(AppNavigation())
 }

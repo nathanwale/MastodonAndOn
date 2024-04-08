@@ -17,6 +17,9 @@ struct RootView: View
     /// Instance host
     let instanceHost = Config.shared.activeInstanceHost
     
+    /// Active account
+    let activeAccount = Config.shared.activeAccount!
+    
     /// App navigation
     @EnvironmentObject var navigation: AppNavigation
     
@@ -31,7 +34,7 @@ struct RootView: View
     {
         NavigationStack(path: $navigation.path)
         {
-            RootTabView()
+            RootTabView(activeAccount: activeAccount)
                 // handle navigation changes
                 .navigationDestination(for: Route.self)
                 {
