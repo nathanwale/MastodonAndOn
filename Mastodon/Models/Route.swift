@@ -19,5 +19,5 @@ enum Route: Codable, Hashable
     case userProfile(username: String, instance: String)
  
     /// View a status
-    case status(MastodonStatus)
+    case viewStatus(MastodonStatus)
 }

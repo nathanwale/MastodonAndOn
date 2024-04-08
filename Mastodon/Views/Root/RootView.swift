@@ -66,8 +66,10 @@ struct RootView: View
     func routeWasPushed(route: Route) -> some View
     {
         let _ = print("Switching to \(route)")
-        switch route {
-            case .status(let status):
+        switch route 
+        {
+            // show status
+            case .viewStatus(let status):
                 StatusDetail(status: status)
             case .userProfile(let username, let instance):
                 let request = AccountLookupRequest(username: username, instance: instance)
