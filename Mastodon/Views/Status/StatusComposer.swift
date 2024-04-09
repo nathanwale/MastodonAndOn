@@ -62,7 +62,11 @@ struct StatusComposer: View
     init(editing: MastodonStatus)
     {
         context = .editing(editing)
-        _content = .init(initialValue: editing.content)
+        
+        // Parse and assign status content
+        let parsedString = ParsedText(html: editing.content).string ?? ""
+        _content = .init(initialValue: parsedString)
+        
     }
     
     
