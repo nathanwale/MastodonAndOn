@@ -18,6 +18,9 @@ struct StatusComposer: View
     /// Access token
     let accessToken = Config.shared.accessToken
     
+    /// App navigation
+    @EnvironmentObject var navigation: AppNavigation
+    
     /// Function to dismiss this view
     @Environment(\.dismiss) var dismiss
     
@@ -319,7 +322,13 @@ struct StatusComposer: View
                 {
                     do {
                         try await postStatus()
-                        dismiss()
+                        print("post successful!")
+                        switch context {
+                            case .new:
+                                dismiss()
+                            case .replying, .editing:
+                                navigation.pop()
+                        }
                     } catch {
                         print(error)
                         postingError = error
