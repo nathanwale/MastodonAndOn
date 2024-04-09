@@ -199,22 +199,38 @@ struct StatusComposer: View
     /// Post status
     func postStatus() async throws
     {
-        let replyToId: MastodonStatus.Identifier? = switch context {
-            case .new, .editing:
-                nil
+        _ = switch context
+        {
+            // Status is new
+            case .new:
+                try await NewStatusRequest(
+                    host: instanceHost,
+                    accessToken: accessToken,
+                    statusContent: content,
+                    isSensitive: hasContentWarning,
+                    spoilerText: contentWarningMessage).send()
+            
+            // Status is replying to another
             case .replying(let status):
-                status.id
+                try await NewStatusRequest(
+                    host: instanceHost,
+                    accessToken: accessToken,
+                    statusContent: content,
+                    replyStatusId: status.id,
+                    isSensitive: hasContentWarning,
+                    spoilerText: contentWarningMessage).send()
+                
+            // Editing status
+            case .editing(let status):
+                try await EditStatusRequest(
+                    statusId: status.id,
+                    host: instanceHost,
+                    accessToken: accessToken,
+                    statusContent: content,
+                    replyStatusId: status.inReplyToId,
+                    isSensitive: hasContentWarning,
+                    spoilerText: contentWarningMessage).send()
         }
-        
-        let request = NewStatusRequest(
-            host: instanceHost,
-            accessToken: accessToken,
-            statusContent: content,
-            replyStatusId: replyToId,
-            isSensitive: hasContentWarning,
-            spoilerText: contentWarningMessage)
-        
-        _ = try await request.send()
     }
     
     
