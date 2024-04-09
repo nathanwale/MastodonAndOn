@@ -16,6 +16,7 @@ struct EditStatusRequest: ApiRequest
         let mediaIds: [String]
         let sensitive: Bool
         let spoilerText: String
+        let visibility: MastodonStatus.StatusVisibility
     }
     
     /// Returns a MastodonStatus
@@ -27,8 +28,8 @@ struct EditStatusRequest: ApiRequest
     /// Host to send request to
     let host: String
     
-    /// Method must be Post
-    let method: HttpMethod = .post
+    /// Method must be Put
+    let method: HttpMethod = .put
     
     /// Endpoint
     var endpoint: Endpoint {
@@ -58,7 +59,8 @@ struct EditStatusRequest: ApiRequest
     {
         let object = EditStatusData(
             status: statusContent, mediaIds: [],
-            sensitive: isSensitive, spoilerText: spoilerText)
+            sensitive: isSensitive, spoilerText: spoilerText, 
+            visibility: .public)
         
         do {
             return try JsonLoader.encoder.encode(object)
