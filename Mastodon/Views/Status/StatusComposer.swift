@@ -258,6 +258,9 @@ struct StatusComposer: View
                 replyingToStatusView
             }
             .padding()
+            .onAppear {
+                updateCharacterCount()
+            }
             .onChange(of: lookupState) {
                 Task {
                     do {
