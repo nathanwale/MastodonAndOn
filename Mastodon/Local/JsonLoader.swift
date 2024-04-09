@@ -112,9 +112,17 @@ struct JsonLoader
     ///
     /// Deccode from document directory
     ///
-    static func fromDocuments<T: Decodable>(name: String) -> T
+    static func fromDocuments<T: Decodable>(name: String) -> T?
     {
         let url = documentUrl(name: name)
-        return fromLocalUrl(url)
+        
+        // Check if file exists
+        if FileManager.default.fileExists(atPath: url.path()) {
+            // File exists, return decoded data
+            return fromLocalUrl(url)
+        } else {
+            // File doesn't exist, return nil
+            return nil
+        }
     }
 }
