@@ -20,6 +20,16 @@ extension ParsedText
             $0 + $1.attributedString
         }
     }
+    
+    /// Parsed Content converted to a plain String
+    var string: String?
+    {
+        if let attributedString {
+            String(attributedString.characters[...])
+        } else {
+            nil
+        }
+    }
 }
 
 ///
@@ -88,7 +98,7 @@ extension ParsedText.Token
 //                    attributes: AttributeContainer.attachment(attachment)
 //                )
 //                return attributedString
-                return AttributedString("<<emoji: \(name)>>")
+                return AttributedString(":\(name):")
         }
     }
     
