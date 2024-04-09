@@ -14,6 +14,7 @@ enum HttpMethod: String
 {
     case get = "GET"
     case post = "POST"
+    case put = "PUT"
 }
 
 ///
@@ -100,7 +101,7 @@ extension ApiRequest
         }
         
         // assign url components to request
-        print("Fetching \(components.url?.absoluteString ?? "<URL is nil!>")")
+        print("\(method.rawValue) \(components.url?.absoluteString ?? "<URL is nil!>")")
         
         if let first = endpoint.asPath.first,
            first != "/" 
@@ -117,7 +118,6 @@ extension ApiRequest
         if let data = postData {
             request.httpBody = data
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpMethod = "POST"
         }
         
         // use access token if available
