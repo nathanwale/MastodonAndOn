@@ -52,6 +52,9 @@ protocol ApiRequest
     
     /// requires an idempotency key in the HTTP header
     var requiresIdempotencyKey: Bool { get }
+    
+    /// print HTTP response to console?
+    var printResponse: Bool { get }
 }
 
 
@@ -80,6 +83,7 @@ extension ApiRequest
     var accessToken: AccessToken? { nil }
     var method: HttpMethod { .get }
     var requiresIdempotencyKey: Bool { false }
+    var printResponse:Bool { false }
 }
 
 
@@ -186,6 +190,11 @@ extension ApiRequest where Response: Decodable
         // ensure response is valid HTTP, else throw error
         guard let httpResponse = response as? HTTPURLResponse else {
             throw ApiRequestError.requestFailed
+        }
+        
+        // Print response if configured
+        if printResponse {
+            print(String(data: data, encoding: .utf8) ?? "Response data can't be converted to String")
         }
 
         // ensure HTTP status code is 200 (OK), else throw error
