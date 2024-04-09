@@ -48,4 +48,12 @@ final class AppNavigation: ObservableObject, Codable
     {
         path.append(route)
     }
+    
+    /// Pop last navigation from Navigation path
+    func pop()
+    {
+        if path.count > 0 {
+            _ = path.popLast()
+        }
+    }
 }
