@@ -41,7 +41,11 @@ struct NotificationListView: View
     /// Placeholder to display while loading notifications from server
     var placeholder: some View
     {
-        Text("...")
+        VStack
+        {
+            Text("Fetching notifications...")
+            ProgressView()
+        }
     }
     
     /// Message to display when there are no notifications
