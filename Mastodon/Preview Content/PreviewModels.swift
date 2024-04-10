@@ -26,6 +26,9 @@ extension JsonLoader
 // MARK: - sample accounts
 extension MastodonAccount
 {
+    /// Sample ID
+    static let sampleIdentifier = sampleUserId
+    
     /// Sample account
     static var sample: Self {
         return JsonLoader.fromSample("single-account")
