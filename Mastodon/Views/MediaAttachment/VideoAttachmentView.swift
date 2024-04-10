@@ -116,6 +116,7 @@ struct VideoAttachmentView
                 }
                 .onDisappear {
                     NotificationCenter.default.removeMediaIsPlayingObserver()
+                    player.pause()
                 }
         }
     }

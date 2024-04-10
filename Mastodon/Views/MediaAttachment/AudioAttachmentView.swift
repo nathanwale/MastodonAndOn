@@ -234,6 +234,7 @@ struct AudioAttachmentView
             .onDisappear
             {
                 NotificationCenter.default.removeMediaIsPlayingObserver()
+                pause()
             }
         }
         
