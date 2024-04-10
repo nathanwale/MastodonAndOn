@@ -123,7 +123,16 @@ struct MediaAttachmentView: View
                     viewIsExpanded.toggle()
                 }
                 .sheet(isPresented: $viewIsExpanded) {
-                    expandedView
+                    NavigationView
+                    {
+                        expandedView
+                            .toolbar {
+                                Button("Close")
+                                {
+                                    viewIsExpanded = false
+                                }
+                            }
+                    }
                 }
             descriptionView
         }
