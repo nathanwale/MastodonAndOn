@@ -52,7 +52,7 @@ struct StatusPost: View
     {
         // If active ID or post ID are nil, we can't edit
         guard
-            let activeId = Config.shared.activeAccount?.id,
+            let activeId = Config.shared.activeAccountIdentifier,
             let postId = post.account.id
         else {
             return false

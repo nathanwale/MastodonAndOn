@@ -10,7 +10,7 @@ import SwiftUI
 protocol ConfigProvider
 {
     var activeInstanceHost: String { get set }
-    var activeAccount: MastodonAccount? { get set }
+    var activeAccountIdentifier: MastodonAccountId? { get set }
     var accessToken: AccessToken { get }
 }
 
@@ -21,7 +21,7 @@ struct Config: ConfigProvider
     {
         case activeInstance = "active-instance"
         case accessToken = "access-token"
-        case activeAccount = "active-account"
+        case activeAccountIdentifier = "active-account-id"
     }
     
     /// Shared instance
@@ -48,14 +48,9 @@ struct Config: ConfigProvider
     var activeInstanceHost: String = MastodonInstance.defaultHost
     
     /// Logged in account
-    var activeAccount: MastodonAccount? {
-        get {
-            JsonLoader.fromDocuments(name: Keys.activeAccount.rawValue)
-        }
-        set {
-            JsonLoader.toDocuments(newValue, name: Keys.activeAccount.rawValue)
-        }
-    }
+    ///
+    @AppStorage(Keys.activeAccountIdentifier.rawValue)
+    var activeAccountIdentifier: MastodonAccountId?
     
     /// Access token, used for authenticated operations
     var accessToken: AccessToken
@@ -83,5 +78,5 @@ struct PreviewConfig: ConfigProvider
     var accessToken = Secrets.previewAccessToken
     
     // Preview account
-    var activeAccount: MastodonAccount? = .sample
+    var activeAccountIdentifier: MastodonAccountId? = MastodonAccount.sampleIdentifier
 }
