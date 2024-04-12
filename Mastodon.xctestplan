@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "E71B2D98-2C57-4D57-945E-A52DF156989B",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Mastodon.xcodeproj",
+      "identifier" : "D6564B892AA94E88000E52BD",
+      "name" : "Mastodon"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Mastodon.xcodeproj",
+        "identifier" : "D62CCCF42AAAE66A00C61CCE",
+        "name" : "MastodonTests"
+      }
+    }
+  ],
+  "version" : 1
+}
