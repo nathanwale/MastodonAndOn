@@ -13,8 +13,8 @@ final class VerifyAccessTokenRequestTest: XCTestCase
 {
     func testRequest() async throws
     {
-        let request = VerifyAccessTokenRequest(host: MastodonInstance.defaultHost, accessToken: Config.shared.accessToken)
+        let request = VerifyAccessTokenRequest(host: MastodonInstance.defaultHost, accessToken: Secrets.previewAccessToken)
         let account = try await request.send()
-        XCTAssertGreaterThan(account.id, "test-id")
+        XCTAssertEqual(account.id, MastodonAccount.sampleIdentifier)
     }
 }
