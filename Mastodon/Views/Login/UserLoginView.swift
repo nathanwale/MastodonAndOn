@@ -133,7 +133,7 @@ struct UserLoginView: View
                     // Store active account ID
                     Config.shared.activeAccountIdentifier = activeAccount.id
                     
-                    print("Access Token: \(token)")
+                    print("Access Token: \(token), Host: \(host), Active Account ID: \(activeAccount.id ?? "???")")
                 } else  {
                     print("Access token unavailable")
                 }
