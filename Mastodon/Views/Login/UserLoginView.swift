@@ -33,8 +33,6 @@ struct UserLoginView: View
         {
             Button("Sign in")
             {
-//                print(authenticationSession)
-//                print(signIn.signInUrl ?? "no url")
                 beginSignIn()
             }
             .buttonStyle(.borderedProminent)
@@ -43,10 +41,6 @@ struct UserLoginView: View
             
             Text("Token").font(.title)
             Text(token ?? "Waiting for token...")
-//            message
-//            usernameField
-//            passwordField
-//            loginButton
         }
     }
     
@@ -124,6 +118,7 @@ struct UserLoginView: View
                 token = try await accessRequest.fetchAccessToken()
                 if let token {
                     try KeychainToken.accessToken.updateOrInsert(token)
+                    Config.shared.activeInstanceHost = host
                     print("Access Token: \(token)")
                 } else  {
                     print("Access token unavailable")
