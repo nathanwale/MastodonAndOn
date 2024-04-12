@@ -22,4 +22,11 @@ struct VerifyAccessTokenRequest: ApiRequest
     
     /// Access token that authorises action
     let accessToken: AccessToken?
+    
+    /// Init with host and access token
+    init(host: String, accessToken: AccessToken)
+    {
+        self.host = host
+        self.accessToken = accessToken
+    }
 }
