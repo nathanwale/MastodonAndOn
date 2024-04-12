@@ -116,9 +116,23 @@ struct UserLoginView: View
                     redirectUri: signIn.callbackUrl!)
                 
                 token = try await accessRequest.fetchAccessToken()
+                
+                // did we get the token?
                 if let token {
+                    // Save token and active host...
                     try KeychainToken.accessToken.updateOrInsert(token)
                     Config.shared.activeInstanceHost = host
+                    
+                    // Request account associated to this access token
+                    let accountRequest = VerifyAccessTokenRequest(
+                        host: host,
+                        accessToken: token)
+                    
+                    let activeAccount = try await accountRequest.send()
+                    
+                    // Store active account ID
+                    Config.shared.activeAccountIdentifier = activeAccount.id
+                    
                     print("Access Token: \(token)")
                 } else  {
                     print("Access token unavailable")
