@@ -25,7 +25,7 @@ struct Config: ConfigProvider
     }
     
     /// Shared instance
-    static let shared: any ConfigProvider = {
+    static var shared: any ConfigProvider = {
         if isPreviewMode {
             return PreviewConfig()
         } else {
