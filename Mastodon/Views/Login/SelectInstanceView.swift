@@ -17,7 +17,7 @@ struct SelectInstanceView: View
     let instances = MastodonInstance.defaultHosts
     
     /// Most instances to display in list
-    let instanceListMaxSize = 20
+    let instanceListMaxSize = 10
     
     var body: some View
     {
