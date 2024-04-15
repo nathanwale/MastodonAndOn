@@ -16,9 +16,12 @@ struct ConnectionStatusView: View
     
     var body: some View
     {
-        HStack(alignment: .top, spacing: 20.0)
+        HStack(alignment: .top, spacing: 10.0)
         {
             Image(systemName: icon.rawValue)
+                .font(.title)
+                .padding(.top, 5)
+                .foregroundColor(iconColor)
             message
             button
         }
@@ -35,6 +38,20 @@ struct ConnectionStatusView: View
                 Icon.serverSuccess
             case .failure:
                 Icon.serverProblem
+        }
+    }
+    
+    var iconColor: Color
+    {
+        switch state {
+            case .untried:
+                .gray
+            case .waiting:
+                .gray
+            case .success:
+                .green
+            case .failure:
+                .red
         }
     }
     
@@ -152,7 +169,40 @@ struct ConnectionStatusView: View
 #Preview("Initiate")
 {
     ConnectionStatusView(
+        state: .untried,
+        host: MastodonInstance.defaultHost,
+        instance: MastodonInstance.sample)
+    {
+        print("Connecting...")
+    }
+}
+
+#Preview("Success")
+{
+    ConnectionStatusView(
         state: .success,
+        host: MastodonInstance.defaultHost,
+        instance: MastodonInstance.sample)
+    {
+        print("Connecting...")
+    }
+}
+
+#Preview("Failed")
+{
+    ConnectionStatusView(
+        state: .failure,
+        host: MastodonInstance.defaultHost,
+        instance: MastodonInstance.sample)
+    {
+        print("Connecting...")
+    }
+}
+
+#Preview("Waiting")
+{
+    ConnectionStatusView(
+        state: .waiting,
         host: MastodonInstance.defaultHost,
         instance: MastodonInstance.sample)
     {
