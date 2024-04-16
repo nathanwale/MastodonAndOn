@@ -46,6 +46,8 @@ enum Icon: String, CaseIterable
     case compose = "square.and.pencil"
     case send = "paperplane"
     case error = "exclamationmark.triangle"
+    case rightArrow = "arrow.right"
+    case ellipsis = "ellipsis"
 }
 
 // Icon extensions
