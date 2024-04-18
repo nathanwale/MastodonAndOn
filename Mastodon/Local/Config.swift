@@ -27,6 +27,17 @@ extension ConfigProvider
             try KeychainToken.accessToken.updateOrInsert(accessToken)
         }
     }
+    
+    /// Do we have a valid Access token?
+    var isAccessTokenValid: Bool {
+        accessToken != Config.missingAccessTokenValue
+    }
+    
+    /// Do we have all required user info?
+    var haveRequiredUserInfo: Bool {
+        isAccessTokenValid
+            && activeAccountIdentifier != nil
+    }
 }
 
 struct Config: ConfigProvider
@@ -38,6 +49,9 @@ struct Config: ConfigProvider
         case accessToken = "access-token"
         case activeAccountIdentifier = "active-account-id"
     }
+    
+    /// Missing access token value
+    static let missingAccessTokenValue = "<<ACCESS TOKEN NOT FOUND>>"
     
     /// Shared instance
     static var shared: any ConfigProvider = {
@@ -74,7 +88,7 @@ struct Config: ConfigProvider
             if let token = try? KeychainToken.accessToken.retrieve() {
                 return token
             } else {
-                return "<<TOKEN NOT FOUND>>"
+                return Self.missingAccessTokenValue
             }
         }
     }
