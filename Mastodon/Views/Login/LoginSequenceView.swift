@@ -113,12 +113,12 @@ struct LoginSequenceView: View
             //
             Icon.error.image
                 .font(.title)
-                .padding(.top, 5)
+                .padding(5)
             
             // Messages
             VStack(alignment: .leading)
             {
-                Text("There was an error posting").font(.headline)
+                Text("There was an error attempting to sign in").font(.headline)
                 Text(error.localizedDescription)
             }
         }
@@ -149,9 +149,10 @@ extension LoginSequenceView
     }
 }
 
-#Preview("Username and Password")
+#Preview("Error")
 {
-    LoginSequenceView() {
+    LoginSequenceView(error: SampleError()) {
         print("Done")
     }
 }
+
