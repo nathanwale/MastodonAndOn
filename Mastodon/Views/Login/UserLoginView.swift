@@ -7,78 +7,39 @@
 
 import SwiftUI
 import AuthenticationServices
-import SafariServices
 
-struct UserLoginView: View 
+///
+/// Attempts OAuth sign-in
+///
+struct UserLoginView: View
 {
+    /// Authentication session
     @Environment(\.webAuthenticationSession) private var authenticationSession
-    @Environment(\.openURL) var openUrl
     
+    /// Host to sign in to
     let host: String
     
-    @State var token: AccessToken? = nil
-    
+    /// Sign-in Configuration
     var signIn: SignIn
     {
         SignIn(host: host)
     }
     
-    @State var username: String = ""
-    @State var password: String = ""
+    /// Call on success with access token
+    let continueWithToken: (AccessToken) async -> ()
     
-    // body
+    /// Call on failure with error
+    let onFailure: (Error) -> ()
+    
+    // body view
     var body: some View
     {
-        VStack
-        {
-            Button("Sign in")
-            {
+        EmptyView()
+            .onAppear {
                 beginSignIn()
             }
-            .buttonStyle(.borderedProminent)
-            
-            Divider()
-            
-            Text("Token").font(.title)
-            Text(token ?? "Waiting for token...")
-        }
     }
     
-    /// message
-    var message: some View
-    {
-        Text("Logging in to **`\(host)`**")
-    }
-    
-    /// Username input field
-    var usernameField: some View
-    {
-        TextField("Username", text: $username)
-            .textInputAutocapitalization(.never)
-            .autocorrectionDisabled()
-            .textFieldStyle(.roundedBorder)
-    }
-    
-    /// Password input field
-    var passwordField: some View
-    {
-        SecureField("Password", text: $password)
-            .textFieldStyle(.roundedBorder)
-    }
-    
-    /// Log in button
-    var loginButton: some View
-    {
-        HStack
-        {
-            Spacer()
-            Button("Log in")
-            {
-                print("Logging into \(host), as \(username), with a password that's \(password.count) characters")
-            }
-            .buttonStyle(.borderedProminent)
-        }
-    }
     
     /// Begin sign in
     func beginSignIn()
@@ -115,40 +76,14 @@ struct UserLoginView: View
                     authCode: authCode!,
                     redirectUri: signIn.callbackUrl!)
                 
-                token = try await accessRequest.fetchAccessToken()
+                let accessToken = try await accessRequest.fetchAccessToken()
                 
-                // did we get the token?
-                if let token {
-                    // Save token and active host...
-                    try KeychainToken.accessToken.updateOrInsert(token)
-                    Config.shared.activeInstanceHost = host
-                    
-                    // Request account associated to this access token
-                    let accountRequest = VerifyAccessTokenRequest(
-                        host: host,
-                        accessToken: token)
-                    
-                    let activeAccount = try await accountRequest.send()
-                    
-                    // Store active account ID
-                    Config.shared.activeAccountIdentifier = activeAccount.id
-                    
-                    print("Access Token: \(token), Host: \(host), Active Account ID: \(activeAccount.id ?? "???")")
-                } else  {
-                    print("Access token unavailable")
-                }
-
+                await continueWithToken(accessToken)
+                
             } catch {
                 // error
-                print(error)
+                onFailure(error)
             }
         }
     }
-}
-
-
-// MARK: - previews
-#Preview {
-    UserLoginView(host: MastodonInstance.defaultHost)
-        .padding()
 }
