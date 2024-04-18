@@ -16,27 +16,38 @@ struct LoginSequenceView: View
     
     @State var error: Error?
     
-    let onComplete: (String, MastodonAccountId, AccessToken) -> ()
+    let onComplete: () -> ()
     
     
-    func onAcquireToken(host: String, accessToken: AccessToken) async
+    func fetchAccountId(host: String, accessToken: AccessToken) async
     {
         do {
-            // Save token and active host...
-            try KeychainToken.accessToken.updateOrInsert(accessToken)
-            Config.shared.activeInstanceHost = host
-            
             // Request account associated to this access token
             let accountRequest = VerifyAccessTokenRequest(
                 host: host,
                 accessToken: accessToken)
             
-            let activeAccount = try await accountRequest.send()
+            let account = try await accountRequest.send()
             
-            // Store active account ID
-            Config.shared.activeAccountIdentifier = activeAccount.id
+            // Set state to complete
+            state = .complete(host: host, accountId: account.id, token: accessToken)
+        } catch {
+            print(error)
+            self.error = error
+        }
+    }
+    
+    /// Store log in details
+    func storeDetails(host: String, accessToken: AccessToken, accountId: MastodonAccountId)
+    {
+        do {
+            // Store login details
+            try Config.shared.storeLoginDetails(
+                instanceHost: host,
+                accessToken: accessToken,
+                accountId: accountId)
             
-            print("Access Token: \(accessToken), Host: \(host), Active Account ID: \(activeAccount.id ?? "???")")
+            print("Access Token: \(accessToken), Host: \(host), Active Account ID: \(accountId)")
         } catch {
             print(error)
             self.error = error
@@ -58,14 +69,16 @@ struct LoginSequenceView: View
                 }
             case .needAccessToken(let host):
                 UserLoginView(host: host) {
-                    await onAcquireToken(host: host, accessToken: $0)
+                    token in
+                    await fetchAccountId(host: host, accessToken: token)
                 } onFailure: {
                     error = $0
                 }
 
             case .complete(let host, let accountId, let token):
                 EmptyView().onAppear {
-                    onComplete(host, accountId, token)
+                    storeDetails(host: host, accessToken: token, accountId: accountId)
+                    onComplete()
                 }
         }
     }
@@ -111,13 +124,13 @@ extension LoginSequenceView
 #Preview("Choose instance")
 {
     LoginSequenceView() {
-        print($0, $1, $2)
+        print("Done")
     }
 }
 
 #Preview("Username and Password")
 {
     LoginSequenceView() {
-        print($0, $1, $2)
+        print("Done")
     }
 }
