@@ -14,6 +14,21 @@ protocol ConfigProvider
     var accessToken: AccessToken { get }
 }
 
+extension ConfigProvider
+{
+    /// Save login info
+    mutating func storeLoginDetails(instanceHost: String, accessToken: AccessToken, accountId: MastodonAccountId) throws
+    {
+        activeInstanceHost = instanceHost
+        activeAccountIdentifier = accountId
+        
+        do {
+            // Save token and active host...
+            try KeychainToken.accessToken.updateOrInsert(accessToken)
+        }
+    }
+}
+
 struct Config: ConfigProvider
 {
     /// String keys
