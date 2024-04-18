@@ -13,17 +13,26 @@ struct ConnectionStatusView: View
     let host: String?
     let instance: MastodonInstance?
     let connectionAction: () async -> ()
+    let onContinue: () -> ()
     
     var body: some View
     {
-        HStack(alignment: .top, spacing: 10.0)
+        VStack
         {
-            Image(systemName: icon.rawValue)
-                .font(.title)
-                .padding(.top, 5)
-                .foregroundColor(iconColor)
-            message
-            button
+            HStack
+            {
+                message
+            }
+            HStack(alignment: .top, spacing: 10.0)
+            {
+                Spacer()
+                // Icon
+                Image(systemName: icon.rawValue)
+                    .font(.title)
+                    .padding(.top, 5)
+                    .foregroundColor(iconColor)
+                button
+            }
         }
     }
     
@@ -89,7 +98,7 @@ struct ConnectionStatusView: View
     /// Initiate connection button
     var initiateConnectionButton: some View
     {
-        Button("Connect", systemImage: Icon.serverConnect.rawValue)
+        Button("Connect")
         {
             Task {
                 await connectionAction()
@@ -107,9 +116,13 @@ struct ConnectionStatusView: View
     /// Connection success
     var continueLoginButton: some View
     {
-        Button("Continue")
+        Button
         {
+            onContinue()
             print("Continuing with login")
+        } label: {
+            Text("Continue")
+            Icon.rightArrow.image
         }
         .buttonStyle(.borderedProminent)
     }
@@ -174,6 +187,8 @@ struct ConnectionStatusView: View
         instance: MastodonInstance.sample)
     {
         print("Connecting...")
+    } onContinue: {
+        print("Continuing")
     }
 }
 
@@ -185,6 +200,8 @@ struct ConnectionStatusView: View
         instance: MastodonInstance.sample)
     {
         print("Connecting...")
+    } onContinue: {
+        print("Continuing")
     }
 }
 
@@ -196,6 +213,8 @@ struct ConnectionStatusView: View
         instance: MastodonInstance.sample)
     {
         print("Connecting...")
+    } onContinue: {
+        print("Continuing")
     }
 }
 
@@ -207,5 +226,7 @@ struct ConnectionStatusView: View
         instance: MastodonInstance.sample)
     {
         print("Connecting...")
+    } onContinue: {
+        print("Continuing")
     }
 }
