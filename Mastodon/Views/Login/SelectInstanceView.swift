@@ -19,6 +19,9 @@ struct SelectInstanceView: View
     /// Most instances to display in list
     let instanceListMaxSize = 10
     
+    /// Called when instance is selected
+    let continueWithHost: (String) -> ()
+    
     var body: some View
     {
         VStack(spacing: 20)
@@ -33,6 +36,8 @@ struct SelectInstanceView: View
                 instance: connectedInstance)
             {
                 await initiateConnection()
+            } onContinue: {
+                continueWithHost(host)
             }
         }
         .padding()
@@ -183,5 +188,7 @@ extension SelectInstanceView
 // MARK: - previews
 #Preview
 {
-    SelectInstanceView()
+    SelectInstanceView() {
+        print($0)
+    }
 }
