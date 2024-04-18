@@ -7,14 +7,40 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        UserLoginView(host: MastodonInstance.defaultHost)
+struct ContentView: View 
+{
+    /// Is login complete
+    @State var loginComplete = false
+    
+    /// Main view
+    var body: some View
+    {
+        if loginComplete {
+            rootView
+        } else {
+            loginView
+        }
+    }
+    
+    /// Login view
+    var loginView: some View
+    {
+        LoginSequenceView() {
+            print("Log in complete")
+            loginComplete = true
+        }
+    }
+    
+    /// Root View
+    var rootView: some View
+    {
+        RootView()
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+
+// MARK: - previews
+#Preview
+{
+    ContentView()
 }
