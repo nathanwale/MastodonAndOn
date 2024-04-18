@@ -12,13 +12,16 @@ import SwiftUI
 ///
 struct LoginSequenceView: View
 {
+    /// Auth State
     @State var state: AuthState = .needInstance
     
+    /// Error if exists
     @State var error: Error?
     
+    /// Call on completion of log in
     let onComplete: () -> ()
     
-    
+    /// Fetch account ID, set next state if successful
     func fetchAccountId(host: String, accessToken: AccessToken) async
     {
         do {
@@ -61,6 +64,25 @@ struct LoginSequenceView: View
         if let error {
             errorView(error)
         }
+        titleView
+        stateView
+    }
+    
+    /// Title view
+    var titleView: some View
+    {
+        HStack
+        {
+            Text("Please sign in to your Mastodon account").font(.title)
+            Spacer()
+        }
+        .padding(.leading)
+    }
+    
+    /// State view
+    @ViewBuilder
+    var stateView: some View
+    {
         switch state {
             case .needInstance:
                 SelectInstanceView() {
@@ -82,7 +104,6 @@ struct LoginSequenceView: View
                 }
         }
     }
-    
     
     /// Error view
     func errorView(_ error: Error) -> some View
