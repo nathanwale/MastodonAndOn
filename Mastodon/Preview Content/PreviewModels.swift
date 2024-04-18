@@ -23,6 +23,22 @@ extension JsonLoader
         return JsonLoader.fromLocalUrl(fileUrl)
     }
 }
+
+// MARK: - sample errors
+struct SampleError: Error, LocalizedError
+{
+    var errorDescription: String? {
+        "Oh no! Something terrible has happened! Not really, this is a sample error."
+    }
+}
+
+extension Error
+{
+    static var sample: Error {
+        SampleError()
+    }
+}
+
 // MARK: - sample accounts
 extension MastodonAccount
 {
