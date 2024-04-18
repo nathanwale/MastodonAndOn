@@ -12,99 +12,97 @@ import SwiftUI
 ///
 struct LoginSequenceView: View
 {
-    @State var accessToken: AccessToken?
-    @State var activeUserId: MastodonAccountId?
-    @State var connectedInstance: MastodonInstance?
+    @State var state: AuthState = .needInstance
     
-    @State var progress: Progress = .enterInstance
+    @State var error: Error?
+    
+    let onComplete: (String, MastodonAccountId, AccessToken) -> ()
+    
+    
+    func onAcquireToken(host: String, accessToken: AccessToken) async
+    {
+        do {
+            // Save token and active host...
+            try KeychainToken.accessToken.updateOrInsert(accessToken)
+            Config.shared.activeInstanceHost = host
+            
+            // Request account associated to this access token
+            let accountRequest = VerifyAccessTokenRequest(
+                host: host,
+                accessToken: accessToken)
+            
+            let activeAccount = try await accountRequest.send()
+            
+            // Store active account ID
+            Config.shared.activeAccountIdentifier = activeAccount.id
+            
+            print("Access Token: \(accessToken), Host: \(host), Active Account ID: \(activeAccount.id ?? "???")")
+        } catch {
+            print(error)
+            self.error = error
+        }
+    }
+    
     
     // MARK: - subviews
     var body: some View
     {
-        progressMap
-        progressStepView
-    }
-    
-    /// Progress step view
-    @ViewBuilder
-    var progressStepView: some View
-    {
-        switch progress 
-        {
-            case .enterInstance:
-                SelectInstanceView(connectedInstance: $connectedInstance)
-            case .enterUsernameAndPassword:
-                UserLoginView(
-                    host: connectedInstance?.domain ?? MastodonInstance.defaultHost,
-                    accessToken: $accessToken)
-            case .complete:
-                Text("Complete")
+        if let error {
+            errorView(error)
+        }
+        switch state {
+            case .needInstance:
+                SelectInstanceView() {
+                    host in
+                    state = .needAccessToken(host: host)
+                }
+            case .needAccessToken(let host):
+                UserLoginView(host: host) {
+                    await onAcquireToken(host: host, accessToken: $0)
+                } onFailure: {
+                    error = $0
+                }
+
+            case .complete(let host, let accountId, let token):
+                EmptyView().onAppear {
+                    onComplete(host, accountId, token)
+                }
         }
     }
     
-    /// Progress map
-    var progressMap: some View
+    
+    /// Error view
+    func errorView(_ error: Error) -> some View
     {
-        HStack(alignment: .bottom)
+        HStack(alignment: .top)
         {
-            Spacer()
-            progressLabel(.enterInstance)
-            Icon.ellipsis.image
+            //
+            Icon.error.image
                 .font(.title)
-                .foregroundColor(.gray)
-                .padding()
-            progressLabel(.enterUsernameAndPassword)
-            Spacer()
+                .padding(.top, 5)
+            
+            // Messages
+            VStack(alignment: .leading)
+            {
+                Text("There was an error posting").font(.headline)
+                Text(error.localizedDescription)
+            }
         }
-        .padding(.horizontal)
+        .padding()
+        .background(Color.yellow.opacity(0.5))
     }
     
-    /// Progress label
-    func progressLabel(_ step: Progress) -> some View
-    {
-        VStack
-        {
-            let isSelected = step == progress
-            let textColour: Color = isSelected ? .primary : .primary.opacity(0.5)
-            
-            // Selection indicator
-            if isSelected {
-                Icon.chevronDown.image
-                    .padding(.bottom, 1)
-            }
-            
-            // Label
-            Text(step.label)
-                .multilineTextAlignment(.center)
-                .foregroundColor(textColour)
-            
-        }
-    }
 }
 
 
 // MARK: - inner types
 extension LoginSequenceView
 {
-    enum Progress
+    enum AuthState
     {
-        case enterInstance
-        case enterUsernameAndPassword
-        case complete
-        
-        /// Label for UI
-        var label: String
-        {
-            switch self
-            {
-                case .enterInstance:
-                    "Choose Mastodon\n Instance"
-                case .enterUsernameAndPassword:
-                    "Username &\n Password"
-                case .complete:
-                    "Complete"
-            }
-        }
+        case needInstance
+        case needAccessToken(host: String)
+        case complete(host: String, accountId: MastodonAccountId, token: AccessToken)
     }
 }
 
@@ -112,10 +110,14 @@ extension LoginSequenceView
 // MARK: - previews
 #Preview("Choose instance")
 {
-    LoginSequenceView()
+    LoginSequenceView() {
+        print($0, $1, $2)
+    }
 }
 
 #Preview("Username and Password")
 {
-    LoginSequenceView(progress: .enterUsernameAndPassword)
+    LoginSequenceView() {
+        print($0, $1, $2)
+    }
 }
