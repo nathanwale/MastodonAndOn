@@ -34,10 +34,16 @@ struct UserLoginView: View
     // body view
     var body: some View
     {
-        EmptyView()
-            .onAppear {
-                beginSignIn()
-            }
+        VStack
+        {
+            ProgressView()
+            Text("Taking you to")
+            Text(host).monospaced().bold()
+            Text("for authentication...")
+        }
+        .onAppear {
+            beginSignIn()
+        }
     }
     
     
@@ -54,6 +60,7 @@ struct UserLoginView: View
         Task
         {
             do {
+                print("Beginning OAuth authentication...")
                 // get URL from authentication session
                 let returnedUrl = try await authenticationSession.authenticate(
                     using: url,
