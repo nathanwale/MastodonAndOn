@@ -48,6 +48,7 @@ enum Icon: String, CaseIterable
     case error = "exclamationmark.triangle"
     case rightArrow = "arrow.right"
     case ellipsis = "ellipsis"
+    case logout = "figure.walk"
 }
 
 // Icon extensions
