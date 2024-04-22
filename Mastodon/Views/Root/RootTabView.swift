@@ -24,6 +24,9 @@ struct RootTabView: View
     /// Selected tab, home timeline by default
     @State var selectedTab = Tab.homeTimeline
     
+    /// Logout callback
+    let logout: () -> ()
+    
     /// Represents each tab
     enum Tab: CaseIterable, Identifiable
     {
@@ -114,7 +117,7 @@ struct RootTabView: View
     var userProfile: some View
     {
         let request = AccountRequestByIdentifier(identifier: activeAccountId, host: instanceHost)
-        return UserProfileRequestView(userRequest: request)
+        return UserProfileRequestView(userRequest: request, logout: logout)
     }
     
     /// Public timeline
@@ -147,6 +150,7 @@ struct RootTabView: View
 
 // MARK: - previews
 #Preview {
-    RootTabView(activeAccountId: MastodonAccount.sampleIdentifier)
-        .environmentObject(AppNavigation())
+    RootTabView(activeAccountId: MastodonAccount.sampleIdentifier) {
+        print("Logged out")
+    }
 }
