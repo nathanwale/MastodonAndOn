@@ -29,12 +29,15 @@ struct RootView: View
     /// Text of new post
     @State var newPostText = ""
     
+    /// Logout callback
+    let logout: () -> ()
+    
     /// Main view
     var body: some View
     {
         NavigationStack(path: $navigation.path)
         {
-            RootTabView(activeAccountId: activeAccountId!)
+            RootTabView(activeAccountId: activeAccountId!, logout: logout)
                 // handle navigation changes
                 .navigationDestination(for: Route.self)
                 {
@@ -82,7 +85,7 @@ struct RootView: View
             // show user profile
             case .userProfile(let username, let instance):
                 let request = AccountLookupRequest(username: username, instance: instance)
-                UserProfileRequestView(userRequest: request)
+                UserProfileRequestView(userRequest: request, logout: logout)
                 
             // show posts for tag
             case .postsForTag(tag: let tag):
@@ -111,6 +114,8 @@ struct RootView: View
 
 
 #Preview {
-    RootView()
-        .environmentObject(AppNavigation())
+    RootView() {
+        print("logged out")
+    }
+    .environmentObject(AppNavigation())
 }
