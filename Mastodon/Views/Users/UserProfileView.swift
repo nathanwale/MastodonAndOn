@@ -18,6 +18,9 @@ struct UserProfileRequestView: View
     /// Error message if error, else nil
     @State var error: (any Error)?
     
+    /// Logout callback
+    let logout: () -> ()
+    
     /// Fetch user
     func fetchUser() async
     {
@@ -33,7 +36,7 @@ struct UserProfileRequestView: View
     {
         if let user {
             // Our user object is ready, so display the profile view
-            UserProfileView(user: user, host: userRequest.host)
+            UserProfileView(user: user, host: userRequest.host, logout: logout)
         } else if error != nil {
             // We have an error, so display error info
             errorInfoView
@@ -86,8 +89,11 @@ struct UserProfileView: View
     /// User Statuses
     @State var statuses: [MastodonStatus] = []
     
-    /// App Navigation
-    @EnvironmentObject private var navigation: AppNavigation
+    /// Display confirm logout dialogue
+    @State var showingLogoutConfirmation = false
+    
+    /// Logout callback
+    let logout: () -> ()
     
     /// Fetch user statuses
     func fetchStatuses() async
@@ -114,6 +120,7 @@ struct UserProfileView: View
             {
                 VStack(alignment: .leading)
                 {
+                    logoutButton
                     nameHeader
                     Divider()
                     profileNote
@@ -242,6 +249,34 @@ struct UserProfileView: View
         }
     
     }
+    
+    // Logout button
+    var logoutButton: some View
+    {
+        HStack
+        {
+            Spacer()
+            Button {
+                showingLogoutConfirmation = true
+            } label: {
+                Text("Logout")
+                Icon.logout.image
+            }
+            .buttonStyle(.bordered)
+            .padding(.trailing, 5)
+        }
+        .confirmationDialog(
+            "Are you sure you want to log out?",
+            isPresented: $showingLogoutConfirmation,
+            titleVisibility: .visible) {
+                Button {
+                    logout()
+                } label: {
+                    Text("Log out")
+                    Icon.logout.image
+                }
+            }
+    }
 }
 
 
@@ -250,6 +285,7 @@ struct UserProfileView: View
     UserProfileView(
         user: MastodonAccount.sample,
         host: MastodonInstance.defaultHost
-    )
-        .environmentObject(AppNavigation())
+    ) {
+        print("Logged out")
+    }
 }
