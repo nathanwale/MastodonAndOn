@@ -98,7 +98,7 @@ struct LoginSequenceView: View
                 }
 
             case .complete(let host, let accountId, let token):
-                EmptyView().onAppear {
+                Text("Login complete.").onAppear {
                     storeDetails(host: host, accessToken: token, accountId: accountId)
                     onComplete()
                 }
