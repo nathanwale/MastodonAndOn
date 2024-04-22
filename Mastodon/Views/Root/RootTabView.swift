@@ -97,7 +97,7 @@ struct RootTabView: View
     var homeTimeline: some View
     {
         // timeline request
-        let request = HomeTimelineRequest.sample
+        let request = HomeTimelineRequest(host: instanceHost, accessToken: accessToken)
         
         // status list with request
         return StatusListRequestView(request: request)
@@ -124,9 +124,7 @@ struct RootTabView: View
     var publicTimeline: some View
     {
         // timeline status source
-        let request = PublicTimelineRequest.sample
-        
-        //
+        let request = PublicTimelineRequest(host: instanceHost, accessToken: accessToken)
         return StatusListRequestView(request: request)
     }
     
