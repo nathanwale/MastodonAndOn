@@ -17,7 +17,7 @@ struct RevokeAccessRequest: ApiRequest
         let token: AccessToken
     }
     
-    struct Empty {}
+    struct Empty: Decodable {}
     
     /// Returns nothing
     typealias Response = Empty
@@ -33,6 +33,13 @@ struct RevokeAccessRequest: ApiRequest
     
     /// Access token that authorises action
     let accessToken: AccessToken?
+    
+    /// Init with host and access token
+    init(host: String, accessToken: AccessToken)
+    {
+        self.host = host
+        self.accessToken = accessToken
+    }
     
     /// Post data
     var postData: Data?
