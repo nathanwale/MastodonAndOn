@@ -28,6 +28,19 @@ extension ConfigProvider
         }
     }
     
+    /// Clear login details
+    mutating func clearLoginDetails() throws
+    {
+        activeAccountIdentifier = nil
+        activeInstanceHost = MastodonInstance.defaultHost
+        
+        do {
+            // Save token and active host...
+            try KeychainToken.accessToken.updateOrInsert(Config.missingAccessTokenValue)
+        }
+    }
+    
+    
     /// Do we have a valid Access token?
     var isAccessTokenValid: Bool {
         accessToken != Config.missingAccessTokenValue
