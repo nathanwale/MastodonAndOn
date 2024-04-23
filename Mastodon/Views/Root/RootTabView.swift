@@ -71,6 +71,17 @@ struct RootTabView: View
                     Icon.user
             }
         }
+        
+        /// Toolbar visibility
+        var toolbarVisibility: Visibility
+        {
+            switch self {
+                case .userProfile:
+                    .hidden
+                default:
+                    .visible
+            }
+        }
     }
     
     // MARK: - subviews
@@ -89,8 +100,9 @@ struct RootTabView: View
                             systemImage: tab.icon.rawValue)
                     }
                     .tag(tab)
+                    .toolbar(tab.toolbarVisibility, for: .navigationBar)
             }
-        }
+        } 
     }
     
     /// Logged in user's timeline
