@@ -130,7 +130,8 @@ struct UserProfileView: View
                 }
             }
         }
-        .ignoresSafeArea()
+        // Allow banner image to extend into top
+        .ignoresSafeArea(.all, edges: .top)
         .task {
             if statuses.isEmpty {
                 await fetchStatuses()
