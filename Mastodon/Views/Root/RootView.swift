@@ -48,16 +48,22 @@ struct RootView: View
                 // toolbar
                 .toolbar {
                     // compose post button
-                    Button {
-                        showingComposeSheet.toggle()
-                    } label: {
-                        Image(systemName: Icon.compose.rawValue)
+                    ToolbarItem(placement: .primaryAction)
+                    {
+                        Button {
+                            showingComposeSheet.toggle()
+                        } label: {
+                            Image(systemName: Icon.compose.rawValue)
+                        }
+                        .buttonStyle(.bordered)
                     }
                 }
                 // compose sheet
                 .sheet(isPresented: $showingComposeSheet) {
                     StatusComposer()
                 }
+                .navigationTitle(instanceHost)
+                .navigationBarTitleDisplayMode(.inline)
         }
         // handle internal URLs
         .onOpenURL
