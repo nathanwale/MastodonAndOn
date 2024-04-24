@@ -21,6 +21,8 @@ struct ParsedText
         case link(url: URL?)
         case mention(name: String, instance: String, url: URL?)
         case emoji(name: String)
+        case bold(String)
+        case italic(String)
     }
     
     /// The input type
