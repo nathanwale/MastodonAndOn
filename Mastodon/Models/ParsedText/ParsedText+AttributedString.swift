@@ -57,6 +57,18 @@ extension ParsedText.Token
             // Plain text
             case .text(let text):
                 return AttributedString(text)
+                
+            // Bold text
+            case .bold(let text):
+                var string = AttributedString(text)
+                string.font = .body.bold()
+                return string
+                
+            // Italic text
+            case .italic(let text):
+                var string = AttributedString(text)
+                string.font = .body.italic()
+                return string
             
             // Hash tags
             case .hashTag(let name, _):
