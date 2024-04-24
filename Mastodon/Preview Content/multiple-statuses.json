@@ -19,7 +19,7 @@
       "muted": false,
       "bookmarked": false,
       "pinned": false,
-      "content": "<p>I need to know what a custom emoji on Mastodon looks like for a project. No one reads this, so I might as well do it here: 🏏 That&#39;s cricket! :blobpeek: And blob cat peeking at you. Hope you&#39;re not doing anything you shouldn&#39;t. :fatyoshi:</p>",
+      "content": "<p>I need to know what a custom emoji on Mastodon looks like for a project. <strong>No one</strong> reads <em>this</em>, so I might as well do it here: 🏏 That&#39;s cricket! :blobpeek: And blob cat peeking at you. Hope you&#39;re not doing anything you shouldn&#39;t. :fatyoshi:</p>",
       "filtered": [],
       "reblog": null,
       "application": {
