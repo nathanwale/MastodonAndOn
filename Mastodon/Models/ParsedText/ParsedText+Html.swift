@@ -77,6 +77,20 @@ extension ParsedText
         return tokens
     }
     
+    /// parse a Strong tag
+    private func parseStrong(_ node: Node) throws -> Token
+    {
+        let text = try node.getChildNodes().first!.outerHtml()
+        return .bold(text)
+    }
+    
+    /// parse an Em tag
+    private func parseEm(_ node: Node) throws -> Token
+    {
+        let text = try node.getChildNodes().first!.outerHtml()
+        return .italic(text)
+    }
+    
     /// Parse a HashTag link as `Token`s
     private func parseHashLink(_ node: Node) throws -> Token
     {
@@ -145,6 +159,10 @@ extension ParsedText
             case "br":
                 // line break
                 return [.lineBreak]
+            case "strong":
+                return try [parseStrong(node)]
+            case "em":
+                return try [parseEm(node)]
             case "a":
                 // web link or hashtag
                 return try [parseAnchor(node)]
@@ -164,6 +182,3 @@ extension ParsedText
         }
     }
 }
-
-
-// MARK: - attributed strings
