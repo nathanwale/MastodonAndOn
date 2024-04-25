@@ -118,23 +118,6 @@ struct StatusList: View
 
 // MARK: - previews
 
-//struct Preview_StatusList: View
-//{
-//    var statuses: [MastodonStatus] = []
-//    var request: any MastodonStatusRequest = MockRequestApi()
-//    
-//    var source: StatusSource
-//    {
-//        .init(statuses: statuses, request: request)
-//    }
-//    
-//    var body: some View
-//    {
-//        StatusList(source: source)
-//            .environmentObject(AppNavigation())
-//    }
-//}
-
 #Preview("Sample posts") 
 {
     StatusList(statuses: MastodonStatus.previews)
