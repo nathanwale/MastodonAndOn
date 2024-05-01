@@ -178,6 +178,11 @@ struct MockRequestApi: MastodonStatusRequest
     var timeFrame: ApiQueryTimeFrame?
     var endpoint = Endpoint.none
     var accessToken: AccessToken? { nil }
+    
+    func after(_ status: MastodonStatus) -> Self
+    {
+        .init(host: host, timeFrame: .after(status))
+    }
 }
 
 
