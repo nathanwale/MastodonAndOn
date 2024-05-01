@@ -101,6 +101,7 @@ struct RootTabView: View
                     }
                     .tag(tab)
                     .toolbar(selectedTab.toolbarVisibility, for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
             }
         }
     }
