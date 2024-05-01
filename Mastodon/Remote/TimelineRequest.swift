@@ -32,6 +32,9 @@ protocol MastodonStatusRequest: ApiRequest where Response == [MastodonStatus]
     
     /// Time frame for Statuses
     var timeFrame: ApiQueryTimeFrame? { get set }
+    
+    /// Request for Statuses after the a given Status
+    func after(_ status: MastodonStatus) -> Self
 }
 
 ///
@@ -66,6 +69,11 @@ struct PublicTimelineRequest: MastodonStatusRequest
     let endpoint = Endpoint.publicTimeline
     var timeFrame: ApiQueryTimeFrame?
     let accessToken: AccessToken?
+    
+    func after(_ status: MastodonStatus) -> Self
+    {
+        .init(host: host, timeFrame: .after(status), accessToken: accessToken)
+    }
 }
 
 ///
@@ -82,6 +90,11 @@ struct UserTimelineRequest: MastodonStatusRequest
     var endpoint: Endpoint {
         .userTimeline(userId: userid)
     }
+    
+    func after(_ status: MastodonStatus) -> Self
+    {
+        .init(host: host, userid: userid, timeFrame: .after(status), accessToken: accessToken)
+    }
 }
 
 ///
@@ -93,6 +106,11 @@ struct HomeTimelineRequest: MastodonStatusRequest
     var timeFrame: ApiQueryTimeFrame?
     let accessToken: AccessToken?
     let endpoint = Endpoint.homeTimeline
+    
+    func after(_ status: MastodonStatus) -> Self
+    {
+        .init(host: host, timeFrame: .after(status), accessToken: accessToken)
+    }
 }
 
 ///
@@ -106,5 +124,10 @@ struct HashtagTimelineRequest: MastodonStatusRequest
     var timeFrame: ApiQueryTimeFrame?
     var endpoint: Endpoint {
         .hashtagTimeline(tag: tag)
+    }
+    
+    func after(_ status: MastodonStatus) -> Self
+    {
+        .init(host: host, tag: tag, timeFrame: .after(status))
     }
 }
