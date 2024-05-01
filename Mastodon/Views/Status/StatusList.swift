@@ -26,7 +26,30 @@ struct StatusListRequestView: View
     func fetchStatuses() async
     {
         do {
+            print("Fetching statuses...")
             statuses = try await request.send()
+        } catch {
+            print(error.localizedDescription)
+            self.error = error
+        }
+    }
+    
+    /// Fetch additional Statuses
+    func fetchMore() async
+    {
+        // Ensure last status
+        guard
+            let statuses,
+            let lastStatus = statuses.last
+        else {
+            return
+        }
+        
+        do {
+            print("Fetching more statuses...")
+            let newStatusRequest = request.after(lastStatus)
+            let newStatuses = try await newStatusRequest.send()
+            self.statuses = statuses + newStatuses
         } catch {
             print(error.localizedDescription)
             self.error = error
@@ -38,7 +61,12 @@ struct StatusListRequestView: View
     {
         if let statuses {
             // Statuses have been fetched, show them
-            StatusList(statuses: statuses)
+            StatusList(statuses: statuses) {
+                await fetchMore()
+            }
+            .refreshable {
+                self.statuses = nil
+            }
         } else if let error {
             // Fetching statuses has produced an error, display
             errorMessage(error)
@@ -94,23 +122,37 @@ struct StatusList: View
         bottom: 20,
         trailing: 0
     )
+    
+    /// End of scroll callback
+    let onEndOfScroll: () async -> ()
         
     /// Body
     var body: some View
     {
-        List(statuses)
+        ScrollView
         {
-            status in
-            
-            // Show status
-            StatusPost(status)
-                .listRowSeparator(.hidden)
-                .listRowInsets(statusInsets)
+            LazyVStack
+            {
+                ForEach(statuses)
+                {
+                    status in
+                    
+                    // Show status
+                    StatusPost(status)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(statusInsets)
+                        .scrollTargetLayout()
+                }
+                ProgressView()
+                    .onAppear {
+                        Task {
+                            await onEndOfScroll()
+                        }
+                    }
+            }
         }
         // apply `scrollable`
         .scrollDisabled(!scrollable)
-        // List styling
-        .listStyle(.plain)
         .buttonStyle(.borderless)
     }
 }
@@ -120,7 +162,9 @@ struct StatusList: View
 
 #Preview("Sample posts") 
 {
-    StatusList(statuses: MastodonStatus.previews)
+    StatusList(statuses: MastodonStatus.previews) {
+        print("Load more...")
+    }
 }
 
 #Preview("Online user posts")
@@ -147,7 +191,9 @@ struct StatusList: View
 {
     let statusId = "110879987501995566"
     let statuses = MastodonStatus.previews.filter { $0.id == statusId}
-    return StatusList(statuses: statuses)
+    return StatusList(statuses: statuses) {
+        print("Load more...")
+    }
 }
 
 #Preview("Hashtag timeline")
