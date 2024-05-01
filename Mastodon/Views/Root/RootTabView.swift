@@ -100,9 +100,9 @@ struct RootTabView: View
                             systemImage: tab.icon.rawValue)
                     }
                     .tag(tab)
-                    .toolbar(tab.toolbarVisibility, for: .navigationBar)
+                    .toolbar(selectedTab.toolbarVisibility, for: .navigationBar)
             }
-        } 
+        }
     }
     
     /// Logged in user's timeline
