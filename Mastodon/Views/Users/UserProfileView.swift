@@ -251,6 +251,7 @@ struct UserProfileView: View
             {
                 status in
                 StatusPost(status)
+                    .padding(.top, 20)
             }
         }
     
