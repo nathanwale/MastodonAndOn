@@ -60,7 +60,10 @@ struct RootView: View
                 }
                 // compose sheet
                 .sheet(isPresented: $showingComposeSheet) {
-                    StatusComposer()
+                    StatusComposer() {
+                        showingComposeSheet = false
+                    }
+                       
                 }
                 .navigationTitle(instanceHost)
                 .navigationBarTitleDisplayMode(.inline)

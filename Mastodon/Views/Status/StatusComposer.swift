@@ -51,14 +51,20 @@ struct StatusComposer: View
     /// Character counter
     let counter = StatusCharacterCounter()
     
+    /// Cancel action
+    let onCancel: (() -> ())?
+    
     // MARK: - inits
     /// Init with new Status
-    init() {}
+    init(onCancel: @escaping () -> ()) {
+        self.onCancel = onCancel
+    }
     
     /// Init replying to Status
     init(replyingTo: MastodonStatus)
     {
         context = .replying(replyingTo)
+        onCancel = nil
     }
     
     /// Init editing Status
@@ -69,6 +75,8 @@ struct StatusComposer: View
         // Parse and assign status content
         let parsedString = ParsedText(html: editing.content).string ?? ""
         _content = .init(initialValue: parsedString)
+        
+        onCancel = nil
         
     }
     
@@ -248,6 +256,7 @@ struct StatusComposer: View
         {
             VStack
             {
+                cancelButton
                 header
                 if hasContentWarning {
                     contentWarningTextField
@@ -272,6 +281,26 @@ struct StatusComposer: View
                         print("Lookup error: \(error)")
                     }
                 }
+            }
+        }
+    }
+    
+    /// Cancel button
+    @ViewBuilder
+    var cancelButton: some View
+    {
+        if let onCancel {
+            HStack
+            {
+                Button
+                {
+                    onCancel()
+                } label: {
+                    Icon.cancel.image
+                        .font(.title)
+                }
+                
+                Spacer()
             }
         }
     }
@@ -532,7 +561,9 @@ extension StatusComposer
 // MARK: - previews
 #Preview("New status") 
 {
-    StatusComposer()
+    StatusComposer() {
+        print("Cancelled!")
+    }
 }
 
 #Preview("Replying")
