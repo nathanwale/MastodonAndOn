@@ -131,7 +131,7 @@ struct StatusList: View
     {
         ScrollView
         {
-            LazyVStack
+            LazyVStack(spacing: 20)
             {
                 ForEach(statuses)
                 {

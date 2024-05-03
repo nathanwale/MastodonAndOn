@@ -114,6 +114,7 @@ struct RootTabView: View
         
         // status list with request
         return StatusListRequestView(request: request)
+            .padding(.top, 20)
     }
     
     /// Logged in user's notifications
@@ -139,6 +140,7 @@ struct RootTabView: View
         // timeline status source
         let request = PublicTimelineRequest(host: instanceHost, accessToken: accessToken)
         return StatusListRequestView(request: request)
+            .padding(.top, 20)
     }
     
     /// Select view for a Tab type
