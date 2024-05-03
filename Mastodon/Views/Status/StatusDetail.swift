@@ -64,13 +64,26 @@ struct StatusDetail: View
             {
                 VStack
                 {
+                    // Ancestors
                     statusList(ancestors)
-                    indicator("Prior", icon: .chevronUp)
+                    
+                    // Prior label
+                    if !ancestors.isEmpty {
+                        indicator("Prior", icon: .chevronUp)
+                    }
+                    
+                    // Post
                     StatusPost(status)
-                        .background(Color.accentColor.opacity(0.1))
                         .id(currentStatusId)
                         .padding(0)
-                    indicator("Replies", icon: .chevronDown)
+                        .padding(.top, 10)
+                    
+                    // Replies label
+                    if !descendants.isEmpty {
+                        indicator("Replies", icon: .chevronDown)
+                    }
+                    
+                    // Descendants
                     statusList(descendants)
                 }
                 .navigationTitle("Post by \(status.account.displayName)")
@@ -80,7 +93,9 @@ struct StatusDetail: View
             }
         }
         .task {
-            await fetchContext()
+            if context == nil {
+                await fetchContext()
+            }
         }
     }
     
@@ -115,7 +130,15 @@ struct StatusDetail: View
 
 
 // MARK: - previews
-#Preview
+#Preview("With context")
+{
+    StatusDetail(
+        status: MastodonStatus.preview,
+        context: MastodonStatus.previewContext
+    )
+}
+
+#Preview("Without context")
 {
     StatusDetail(
         status: MastodonStatus.preview
