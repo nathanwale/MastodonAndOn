@@ -49,6 +49,7 @@ enum Icon: String, CaseIterable
     case rightArrow = "arrow.right"
     case ellipsis = "ellipsis"
     case logout = "figure.walk"
+    case cancel = "xmark.rectangle.fill"
 }
 
 // Icon extensions
