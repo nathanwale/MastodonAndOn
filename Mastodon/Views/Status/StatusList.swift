@@ -131,7 +131,7 @@ struct StatusList: View
     {
         ScrollView
         {
-            LazyVStack(spacing: 20)
+            LazyVStack()
             {
                 ForEach(statuses)
                 {
@@ -142,6 +142,7 @@ struct StatusList: View
                         .listRowSeparator(.hidden)
                         .listRowInsets(statusInsets)
                         .scrollTargetLayout()
+                        .padding(.top, 20)
                 }
                 ProgressView()
                     .onAppear {
