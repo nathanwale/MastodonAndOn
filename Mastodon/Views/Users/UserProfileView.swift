@@ -11,6 +11,9 @@ struct UserProfileRequestView: View
 {
     /// Request to fetch user
     let userRequest: any AccountRequest
+    
+    /// Banner height
+    let bannerHeight = 200
 
     /// Account when fetched, else nil
     @State var user: MastodonAccount?
@@ -219,6 +222,8 @@ struct UserProfileView: View
     var bannerImage: some View
     {
         WebImage(url: user.header)
+            .frame(height: 200)
+            .scaledToFill()
     }
     
     // Profile pic
