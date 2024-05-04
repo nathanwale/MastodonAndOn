@@ -95,6 +95,11 @@ struct StatusPost: View
         navigation.push(userProfileRoute)
     }
     
+    /// Visit status detail
+    func visitStatusDetail()
+    {
+        navigation.push(.viewStatus(status))
+    }
     
     // MARK: - subviews
     // Body
@@ -140,6 +145,9 @@ struct StatusPost: View
             {
                 content
                     .padding(.bottom)
+                    .onTapGesture {
+                        visitStatusDetail()
+                    }
             }
             .padding(.horizontal)
             
