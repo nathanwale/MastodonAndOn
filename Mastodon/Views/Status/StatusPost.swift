@@ -62,6 +62,17 @@ struct StatusPost: View
         return activeId == postId
     }
     
+    // User Profile Nav Route
+    var userProfileRoute: Route
+    {
+        // Instance is external host or the active instance
+        let instance = account.externalHost ??
+            Config.shared.activeInstanceHost
+        
+        return .userProfile(
+            username: account.username,
+            instance: instance)
+    }
     
     // Init
     init(_ status: MastodonStatus, showToolBar: Bool = true)
@@ -75,6 +86,13 @@ struct StatusPost: View
     {
         print("Editing Status #\(post.id ?? "?")")
         navigation.push(.editStatus(post))
+    }
+    
+    /// Visit this user
+    func visitProfile()
+    {
+        print("Visiting", userProfileRoute)
+        navigation.push(userProfileRoute)
     }
     
     
@@ -181,6 +199,9 @@ struct StatusPost: View
     var profileImage: some View
     {
         ProfileImage(url: account.avatar)
+            .onTapGesture {
+                visitProfile()
+            }
     }
     
     /// Profile features
@@ -197,6 +218,9 @@ struct StatusPost: View
                     CustomEmojiText(account.displayName, emojis: emojis)
                         .font(.headline)
                         .lineLimit(1)
+                        .onTapGesture {
+                            visitProfile()
+                        }
                     
                     // Show edit button if editable
                     if isEditable {
@@ -208,6 +232,9 @@ struct StatusPost: View
                 {
                     // Webfinger account uri: eg. "@username@instance.org"
                     Text("@" + account.acct)
+                        .onTapGesture {
+                            visitProfile()
+                        }
                     // Space
                     Spacer()
                     // When created. eg. "3 days ago"
