@@ -28,6 +28,18 @@ class MastodonAccount: Codable
     /// username for local users, or username@domain for remote users.
     var acct: WebfingerAccount!
     
+    /// External host if available, else nil
+    var externalHost: String?
+    {
+        // If there's no '@' in the account, then we
+        // assume the host is internal
+        guard acct.contains("@") else {
+            return nil
+        }
+        
+        return String(acct.split(separator: "@")[1])
+    }
+    
     /// Location of profile page
     var url: URL!
     
