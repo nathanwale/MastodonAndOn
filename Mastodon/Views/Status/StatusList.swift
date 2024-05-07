@@ -22,6 +22,8 @@ struct StatusListRequestView: View
     /// The list of statuses to display, once fetched
     @State var statuses: [MastodonStatus]?
     
+    var scrollable = true
+    
     /// Fetch Statuses from request
     func fetchStatuses() async
     {
@@ -61,7 +63,7 @@ struct StatusListRequestView: View
     {
         if let statuses {
             // Statuses have been fetched, show them
-            StatusList(statuses: statuses) {
+            StatusList(statuses: statuses, scrollable: scrollable) {
                 await fetchMore()
             }
             .refreshable {
@@ -129,32 +131,46 @@ struct StatusList: View
     /// Body
     var body: some View
     {
+        if scrollable {
+            scrollableList
+        } else {
+            listStack
+        }
+    }
+    
+    /// Non-scrollable portion
+    var listStack: some View
+    {
+        LazyVStack()
+        {
+            ForEach(statuses)
+            {
+                status in
+                
+                // Show status
+                StatusPost(status)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(statusInsets)
+                    .scrollTargetLayout()
+                    .padding(.top, 20)
+            }
+            ProgressView()
+                .onAppear {
+                    Task {
+                        await onEndOfScroll()
+                    }
+                }
+        }
+        .buttonStyle(.borderless)
+    }
+    
+    /// Scrollable list
+    var scrollableList: some View
+    {
         ScrollView
         {
-            LazyVStack()
-            {
-                ForEach(statuses)
-                {
-                    status in
-                    
-                    // Show status
-                    StatusPost(status)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(statusInsets)
-                        .scrollTargetLayout()
-                        .padding(.top, 20)
-                }
-                ProgressView()
-                    .onAppear {
-                        Task {
-                            await onEndOfScroll()
-                        }
-                    }
-            }
+            listStack
         }
-        // apply `scrollable`
-        .scrollDisabled(!scrollable)
-        .buttonStyle(.borderless)
     }
 }
 
