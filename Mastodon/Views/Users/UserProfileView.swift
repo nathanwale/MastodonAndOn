@@ -128,7 +128,9 @@ struct UserProfileView: View
                     Divider()
                     profileNote
                     statistics
-                    fields
+                    if !user.fields.isEmpty {
+                        fields
+                    }
                     statusList
                 }
             }
