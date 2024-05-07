@@ -222,8 +222,13 @@ struct UserProfileView: View
     var bannerImage: some View
     {
         WebImage(url: user.header)
-            .frame(height: 200)
             .scaledToFill()
+            .frame(height: 200)
+            .clipped()
+            .opacity(0.5)
+            .background {
+                Color.black
+            }
     }
     
     // Profile pic
