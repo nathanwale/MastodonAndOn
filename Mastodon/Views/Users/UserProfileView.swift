@@ -288,11 +288,19 @@ struct UserProfileView: View
 
 
 // MARK: - previews
-#Preview {
+#Preview("@nwale") {
     UserProfileView(
         user: MastodonAccount.sample,
         host: MastodonInstance.defaultHost
     ) {
+        print("Logged out")
+    }
+}
+
+#Preview("@ComicContext") {
+    let request = AccountRequestByIdentifier(identifier: "109245238866201828", host: "mstdn.social")
+    
+    return UserProfileRequestView(userRequest: request) {
         print("Logged out")
     }
 }
