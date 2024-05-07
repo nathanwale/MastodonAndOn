@@ -177,6 +177,7 @@ struct UserProfileView: View
             
             // Separator
             Divider()
+                .padding(.trailing, 10)
             
             // Stats
             stat(value: user.statusesCount, label: "Statuses")
@@ -194,8 +195,28 @@ struct UserProfileView: View
         {
             Text(label)
                 .font(.caption2)
-            Text(String(value))
-                .font(.title)
+            Text(readableStatLabel(value: value))
+                .font(.headline)
+        }
+    }
+    
+    /// Stat count label: 1.2K, 3.2M, etc.
+    func readableStatLabel(value: Int) -> String
+    {
+        // Formatter
+        let formatter = NumberFormatter()
+        if value > 1_000_000 {
+            formatter.maximumSignificantDigits = 3
+            let number = formatter.string(from: Double(value) / 1_000_000.0 as NSNumber) ?? "000"
+            return "\(number)M"
+        } else if value > 10_000 {
+            formatter.maximumSignificantDigits = 3
+            let number = formatter.string(from: Double(value) / 1000.0 as NSNumber) ?? "000"
+            return "\(number)K"
+        } else {
+            formatter.groupingSize = 3
+            formatter.usesGroupingSeparator = true
+            return formatter.string(from: value as NSNumber) ?? "000"
         }
     }
     
