@@ -17,7 +17,7 @@ enum ApiQueryTimeFrame
             case .before(let status):
                 return .init(name: "since_id", value: status.id)
             case .after(let status):
-                return .init(name: "min_id", value: status.id)
+                return .init(name: "max_id", value: status.id)
         }
     }
 }
@@ -47,7 +47,7 @@ extension MastodonStatusRequest
     var limit: Int { 20 }
     
     /// query items
-    var queryItems: [URLQueryItem]? {
+    var queryItems: [URLQueryItem] {
         var items = [
             URLQueryItem(name: "limit", value: String(limit)),
         ]
