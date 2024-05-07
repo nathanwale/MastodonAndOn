@@ -26,7 +26,7 @@ struct MastodonApp: App
             let _ = print("""
             ...Starting app!
             Stored user details...
-            Active user id: \(Config.shared.activeAccountIdentifier ?? "None"), 
+            Active user id: \(Config.shared.activeAccountIdentifier ?? "None"),
             Active instance: \(Config.shared.activeInstanceHost),
             Access token: \(Config.shared.accessToken)
             """)
