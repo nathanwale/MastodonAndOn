@@ -84,30 +84,12 @@ struct UserProfileView: View
         UserTimelineRequest(host: host, userid: user.id, accessToken: nil)
     }
     
-    /// Status Source
-    var statusSource: StatusSource {
-        .init(statuses: [], request: statusRequest)
-    }
-    
-    /// User Statuses
-    @State var statuses: [MastodonStatus] = []
-    
     /// Display confirm logout dialogue
     @State var showingLogoutConfirmation = false
     
     /// Logout callback
     let logout: () -> ()
-    
-    /// Fetch user statuses
-    func fetchStatuses() async
-    {
-        do {
-            statuses = try await statusRequest.send()
-        } catch {
-            print(error)
-        }
-    }
-    
+        
     
     // MARK: - subviews
     // Body
@@ -131,17 +113,14 @@ struct UserProfileView: View
                     if !user.fields.isEmpty {
                         fields
                     }
-                    statusList
+                    
+                    // User Statuses
+                    StatusListRequestView(request: statusRequest, scrollable: false)
                 }
             }
         }
         // Allow banner image to extend into top
         .ignoresSafeArea(.all, edges: .top)
-        .task {
-            if statuses.isEmpty {
-                await fetchStatuses()
-            }
-        }
     }
     
     // Display name and account ID
@@ -267,22 +246,6 @@ struct UserProfileView: View
                         emojis: user.emojis)
             .font(.headline)
             .padding()
-    }
-    
-    // User statuses
-    var statusList: some View
-    {
-
-        VStack
-        {
-            ForEach(statuses)
-            {
-                status in
-                StatusPost(status)
-                    .padding(.top, 20)
-            }
-        }
-    
     }
     
     // Logout button
