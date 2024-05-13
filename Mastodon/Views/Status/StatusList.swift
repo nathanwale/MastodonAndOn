@@ -84,11 +84,17 @@ struct StatusListRequestView: View
     /// Activity indicator
     var activityIndicator: some View
     {
-        VStack
+        HStack
         {
-            Text("Fetching Statuses...")
-            ProgressView()
+            Spacer()
+            VStack
+            {
+                Text("Fetching Statuses...")
+                ProgressView()
+            }
+            Spacer()
         }
+        .padding(.top, 20)
     }
     
     /// Error message
