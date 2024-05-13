@@ -55,7 +55,6 @@ struct RootView: View
                         } label: {
                             Image(systemName: Icon.compose.rawValue)
                         }
-                        .buttonStyle(.bordered)
                     }
                 }
                 // compose sheet
