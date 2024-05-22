@@ -94,11 +94,13 @@ struct RootView: View
             case .userProfile(let username, let instance):
                 let request = AccountLookupRequest(username: username, instance: instance)
                 UserProfileRequestView(userRequest: request, logout: logout)
+                    .navigationTitle("@\(username)")
                 
             // show posts for tag
             case .postsForTag(tag: let tag):
                 let request = HashtagTimelineRequest(host: instanceHost, tag: tag)
                 StatusListRequestView(request: request)
+                    .navigationTitle("#\(tag)")
                 
             // reply to status
             case .replyToStatus(let status):
