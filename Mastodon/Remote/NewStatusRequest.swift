@@ -49,12 +49,14 @@ struct NewStatusRequest: ApiRequest
     /// Posting requires and idempotency key
     let requiresIdempotencyKey = true
     
+    let printResponse: Bool = true
+    
     /// Post data
     var postData: Data?
     {
         let object = NewStatusData(
             status: statusContent, mediaIds: [], inReplyToId: replyStatusId,
-            sensitive: isSensitive, spoilerText: spoilerText)
+            sensitive: isSensitive, spoilerText: (isSensitive ? spoilerText : ""))
         
         do {
             return try JsonLoader.encoder.encode(object)

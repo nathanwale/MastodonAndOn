@@ -59,7 +59,7 @@ struct EditStatusRequest: ApiRequest
     {
         let object = EditStatusData(
             status: statusContent, mediaIds: [],
-            sensitive: isSensitive, spoilerText: spoilerText, 
+            sensitive: isSensitive, spoilerText: (isSensitive ? spoilerText : ""),
             visibility: .public)
         
         do {
