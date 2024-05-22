@@ -21,6 +21,14 @@ struct SignIn
     /// callback scheme
     let callbackScheme = "mastodonandon"
     
+    /// Auth scopes
+    let scopes = [
+        "read",
+        "write",
+        "follow",
+        "push"
+    ]
+    
     /// Host to sign in to
     let host: String
     
@@ -62,7 +70,8 @@ struct SignIn
         [
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "client_id", value: Keys.clientKey),
-            URLQueryItem(name: "redirect_uri", value: callbackUrl?.absoluteString)
+            URLQueryItem(name: "redirect_uri", value: callbackUrl?.absoluteString),
+            URLQueryItem(name: "scope", value: scopes.joined(separator: "+"))
         ]
     }
 }
