@@ -48,6 +48,12 @@ struct StatusComposer: View
     /// Posting error if exists
     @State var postingError: Error?
     
+    /// Are we fetching lookup values?
+    @State var isFetchingLookup = false
+    
+    /// Focus state
+    @FocusState var textFieldFocused: Bool
+    
     /// Character counter
     let counter = StatusCharacterCounter()
     
@@ -175,7 +181,11 @@ struct StatusComposer: View
         
         // We should perform lookup if request is no longer nil
         if let request {
+            isFetchingLookup = true
             lookupResults = try await request.lookup()
+            isFetchingLookup = false
+        } else {
+            lookupResults = []
         }
     }
     
@@ -209,6 +219,8 @@ struct StatusComposer: View
         }
         
         content.replaceSubrange(index..., with: "\(symbol)\(replacement)")
+        lookupResults = []
+        lookupState = .none
     }
     
     /// Post status
@@ -266,12 +278,16 @@ struct StatusComposer: View
                     postingErrorMessage
                 }
                 postButton
+                if isFetchingLookup {
+                    ProgressView()
+                }
                 lookupMenu
                 replyingToStatusView
             }
             .padding()
             .onAppear {
                 updateCharacterCount()
+                textFieldFocused = true
             }
             .onChange(of: lookupState) {
                 Task {
@@ -331,6 +347,7 @@ struct StatusComposer: View
         TextField("Post content", text: $content, axis: .vertical)
             .textFieldStyle(.roundedBorder)
             .lineLimit(7, reservesSpace: true)
+            .focused($textFieldFocused, equals: true)
             .onKeyPress(phases: .up) {
                 _ in
                 characterWasEntered()
@@ -401,16 +418,19 @@ struct StatusComposer: View
     {
         VStack(spacing: 1)
         {
-            let lookupName = switch lookupState {
+            if !lookupResults.isEmpty
+            {
+                let lookupName = switch lookupState {
                 case .none:
                     ""
                 case .hashtag(let tag):
                     "Tags beginning with \(tag ?? "")"
                 case .mention(let mention):
                     "Accounts beginning with \(mention ?? "")"
+                }
+                
+                Text(lookupName).font(.headline)
             }
-            
-            Text(lookupName).font(.headline)
             
             ForEach(lookupResults)
             {
@@ -450,6 +470,7 @@ struct StatusComposer: View
             }
             Spacer()
         }
+        .contentShape(Rectangle())
         .onTapGesture {
             replaceLast(symbol: "@", replacement: account.acct)
         }
@@ -464,6 +485,7 @@ struct StatusComposer: View
             Spacer()
             Text(String(count))
         }
+        .contentShape(Rectangle())
         .onTapGesture {
             replaceLast(symbol: "#", replacement: tag)
         }
@@ -474,7 +496,7 @@ struct StatusComposer: View
     {
         HStack(alignment: .top)
         {
-            //
+            // Error icon
             Icon.error.image
                 .font(.title)
                 .padding(.top, 5)
