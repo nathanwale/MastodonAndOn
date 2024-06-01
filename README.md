@@ -8,4 +8,4 @@ If you are looking for a Mastodon client, I'd recommend the [IceCubes App](https
 There is a write-up of this project [at my website](https://looploopbreak.netlify.app/posts/mastodon-client/)
 
 # Video tour
-<iframe width="560" height="315" src="https://www.youtube.com/embed/nwX7kLQ9nus?si=RZfRq4OuFN84MAu2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+There's a short video tour of the app [on YouTube](https://www.youtube.com/watch?v=nwX7kLQ9nus)
