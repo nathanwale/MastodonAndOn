@@ -52,7 +52,7 @@ extension URL
     /// The scheme used for internal URLs
     static let internalScheme = "mastodonandon"
     
-    /// Return an internal URL. eg.: http://mastodonandon/view-tag?tag=cats
+    /// Return an internal URL. eg.: mastodonandon://view-tag?tag=cats
     /// - host: The host part of the URL. "view-tag" in the example
     /// - query: A dictionary of query terms to values. ["tag": "cats"] in the example
     static func internalUrl(locator: InternalLocator) -> Self
